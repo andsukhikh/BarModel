@@ -160,6 +160,10 @@ public:
 	{
 		return grid_->size_y();
 	}
+
+	void set_initial_value(double init_temp)
+	{
+	}
 };
 
 
@@ -255,15 +259,40 @@ public:
 	double CONST;
 public:
 
-	void calculate_at(std::size_t x_index, std::size_t y_index)
+	void evaluate()
 	{
-		decltype(auto) left_flux = prop->thermal_conductivity * y_step / x_step * (temp->along_y(y_index).along_x(x_index - 1) - temp->along_y(y_index).along_x(x_index));
-		decltype(auto) right_flux = prop->thermal_conductivity * y_step / x_step * (temp->along_y(y_index).along_x(x_index) - temp->along_y(y_index).along_x(x_index + 1));
+		Temperature new_temp(*temp);
 
-		decltype(auto) down_flux = prop->thermal_conductivity * x_step / y_step * (temp->along_y(y_index - 1).along_x(x_index) - temp->along_y(y_index).along_x(x_index));
-		decltype(auto) up_flux = prop->thermal_conductivity * x_step / y_step * (temp->along_y(y_index).along_x(x_index) - temp->along_y(y_index + 1).along_x(x_index));
+		x_step = prop->length / temp->size_x();
+		x_step = prop->length / temp->size_x();
 
-		new_temp->along_y(y_index).along_x(x_index) = temp->along_y(y_index).along_x(x_index) + CONST * (left_flux - right_flux + down_flux - up_flux) + Q_extend;
+		if (check_criterion())
+		{
+			for (std::size_t y_index = 0, y_end_index = new_temp.size_y() - 1; y_index != y_end_index; ++y_index)
+			{
+				for (std::size_t x_index = 0, x_end_index = new_temp.size_x() - 1; x_index != x_end_index; ++x_index)
+				{
+					if (check_left_down_corner(x_index, y_index))
+					if (check_left_up_corner(x_index, y_index))
+					if (check_right_down_corner(x_index, y_index))
+					if (check_right_up_corner(x_index, y_index))
+
+					calculate_at(x_index, y_index);
+				}
+			}
+		}
+		else throw std::runtime_error("The convergence condition of the difference scheme is not met: coarse mesh");
+	}
+
+	void calculate_at(std::size_t i, std::size_t j)
+	{
+		decltype(auto) left_flux = prop->thermal_conductivity * y_step / x_step * (temp->along_y(j).along_x(i - 1) - temp->along_y(j).along_x(i));
+		decltype(auto) right_flux = prop->thermal_conductivity * y_step / x_step * (temp->along_y(j).along_x(i) - temp->along_y(j).along_x(i + 1));
+
+		decltype(auto) down_flux = prop->thermal_conductivity * x_step / y_step * (temp->along_y(j - 1).along_x(i) - temp->along_y(j).along_x(i));
+		decltype(auto) up_flux = prop->thermal_conductivity * x_step / y_step * (temp->along_y(j).along_x(i) - temp->along_y(j + 1).along_x(i));
+
+		new_temp->along_y(j).along_x(i) = temp->along_y(j).along_x(i) + CONST * (left_flux - right_flux + down_flux - up_flux) + Q_extend;
 	}
 
 	const bool check_criterion() const
@@ -275,12 +304,6 @@ public:
 
 class Solver
 {
-	std::shared_ptr<Properties> prop_;
-	std::shared_ptr<Temperature> temp_;
-
-	double time_step_ = 1;
-	double Q_extend_ = 0;
-
 	std::shared_ptr<ExplicitScheme> scheme_;
 public:
 	Solver() = default;
@@ -311,36 +334,7 @@ public:
 
 	void solve()
 	{
-		Temperature new_temp(*temp_);
-
-		//decltype(auto) x_step = prop_->length / temp_->size_x();
-		//decltype(auto) y_step = prop_->width / temp_->size_y();
-
-		//auto CONST = prop_->heat_capacity * prop_->density * time_step_ / (x_step * y_step);
-
-		scheme_->x_step = scheme_->prop->length / scheme_->temp->size_x();
-		scheme_->x_step = scheme_->prop->length / scheme_->temp->size_x();
-
-		//bool stop_criterion = time_step / (x_step * x_step) + time_step / (y_step * y_step) > 1 / (2 * prop->thermal_diffusivity) ? true : false;
-
-		if (scheme_->check_criterion())
-		{
-			for (std::size_t y_index = 1, y_end_index = new_temp.size_y() - 1; y_index != y_end_index; ++y_index)
-			{
-				for (std::size_t x_index = 1, x_end_index = new_temp.size_x() - 1; x_index != x_end_index; ++x_index)
-				{
-					//decltype(auto) left_flux = prop_->thermal_conductivity * y_step / x_step * (temp_->along_y(y_index).along_x(x_index - 1) - temp_->along_y(y_index).along_x(x_index));
-					//decltype(auto) right_flux = prop_->thermal_conductivity * y_step / x_step * (temp_->along_y(y_index).along_x(x_index) - temp_->along_y(y_index).along_x(x_index + 1));
-
-					//decltype(auto) down_flux = prop_->thermal_conductivity * x_step / y_step * (temp_->along_y(y_index - 1).along_x(x_index) - temp_->along_y(y_index).along_x(x_index));
-					//decltype(auto) up_flux = prop_->thermal_conductivity * x_step / y_step * (temp_->along_y(y_index).along_x(x_index) - temp_->along_y(y_index + 1).along_x(x_index));
-
-					//new_temp.along_y(y_index).along_x(x_index) = temp_->along_y(y_index).along_x(x_index) + CONST * (left_flux - right_flux + down_flux - up_flux) + Q_extend_;
-					scheme_->calculate_at(x_index, y_index);
-				}
-			}
-		}
-		else throw std::runtime_error("The convergence condition of the difference scheme is not met: coarse mesh");
+		scheme_->evaluate();
 	}
 };
 

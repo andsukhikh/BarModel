@@ -5,6 +5,7 @@
 #include <string>
 #include <iomanip>
 #include <exception>
+#include <optional>
 
 //  	 X	
 //  	^
@@ -146,6 +147,11 @@ public:
 		grid_ = temperature.grid_;
 	}
 
+	Temperature& operator=(const Temperature& temperature)
+	{
+		grid_ = temperature.grid_;
+	}
+
 	decltype(auto) along_y(std::size_t index)
 	{
 		return grid_->along_y(index);
@@ -227,6 +233,11 @@ struct Boundary
 	std::shared_ptr<BoundaryCondition> right_boundary_;
 	std::shared_ptr<BoundaryCondition> up_boundary_;
 	std::shared_ptr<BoundaryCondition> down_boundary_;
+//public:
+//	static const bool check_left_down_corner(std::size_t x_index, std::size_t y_index)
+//	{
+//		return 
+//	}
 };
 
 
@@ -242,50 +253,75 @@ struct Properties
 };
 
 
+class LowerRight
+{
+	static const bool check(std::size_t x_index, std::size_t y_index)
+	{
+		return x_index == 0 && y_index == 0;
+	}
+};
+
+
 class ExplicitScheme
 {
 public:
 	std::shared_ptr<Temperature> temp;
-	std::shared_ptr<Temperature> new_temp;
+	std::shared_ptr<Temperature> new_temp = temp;
 
 	std::shared_ptr<Properties> prop;
 
-	double time_step = 1;
+	std::shared_ptr<Boundary> boundary_conditions;
+
+	std::size_t time_partitions;
+	double time_end;
+
 	double x_step;
 	double y_step;
 
-	double Q_extend = 0;
+	double Q_extend;
 
 	double CONST;
 public:
 
-	void evaluate()
+	Temperature evaluate()
 	{
-		Temperature new_temp(*temp);
-
 		x_step = prop->length / temp->size_x();
-		x_step = prop->length / temp->size_x();
+		y_step = prop->width / temp->size_y();
 
 		if (check_criterion())
 		{
-			for (std::size_t y_index = 0, y_end_index = new_temp.size_y() - 1; y_index != y_end_index; ++y_index)
+			for (std::size_t y_index = 0, y_end_index = temp->size_y() - 1; y_index != y_end_index; ++y_index)
 			{
-				for (std::size_t x_index = 0, x_end_index = new_temp.size_x() - 1; x_index != x_end_index; ++x_index)
+				for (std::size_t x_index = 0, x_end_index = temp->size_x() - 1; x_index != x_end_index; ++x_index)
 				{
-					if (check_left_down_corner(x_index, y_index))
-					if (check_left_up_corner(x_index, y_index))
-					if (check_right_down_corner(x_index, y_index))
-					if (check_right_up_corner(x_index, y_index))
+					//if (check_left_down_corner(x_index, y_index))
+					//if (check_left_up_corner(x_index, y_index))
+					//if (check_right_down_corner(x_index, y_index))
+					//if (check_right_up_corner(x_index, y_index))
 
-					calculate_at(x_index, y_index);
+					//calculate_at(x_index, y_index);
+
+					if (check<LowerRight>(x_index, y_index)) calculate_at<LowerRight>(x_index, y_index);
 				}
 			}
 		}
 		else throw std::runtime_error("The convergence condition of the difference scheme is not met: coarse mesh");
 	}
-
-	void calculate_at(std::size_t i, std::size_t j)
+private:
+	template<typename Position>
+	void calculate_at(std::size_t i, std::size_t j/*, const std::optional<BoundaryCondition>& conditions = std::nullopt*/)
 	{
+		//if (conditions.has_value())
+		//{
+		//	decltype(auto) left_flux = prop->thermal_conductivity * y_step / x_step * (temp->along_y(j).along_x(i - 1) - temp->along_y(j).along_x(i));
+		//	decltype(auto) right_flux = prop->thermal_conductivity * y_step / x_step * (temp->along_y(j).along_x(i) - temp->along_y(j).along_x(i + 1));
+
+		//	decltype(auto) down_flux = prop->thermal_conductivity * x_step / y_step * (temp->along_y(j - 1).along_x(i) - temp->along_y(j).along_x(i));
+		//	decltype(auto) up_flux = prop->thermal_conductivity * x_step / y_step * (temp->along_y(j).along_x(i) - temp->along_y(j + 1).along_x(i));
+
+		//	new_temp->along_y(j).along_x(i) = temp->along_y(j).along_x(i) + CONST * (left_flux - right_flux + down_flux - up_flux) + Q_extend;
+		//}
+
 		decltype(auto) left_flux = prop->thermal_conductivity * y_step / x_step * (temp->along_y(j).along_x(i - 1) - temp->along_y(j).along_x(i));
 		decltype(auto) right_flux = prop->thermal_conductivity * y_step / x_step * (temp->along_y(j).along_x(i) - temp->along_y(j).along_x(i + 1));
 
@@ -295,10 +331,40 @@ public:
 		new_temp->along_y(j).along_x(i) = temp->along_y(j).along_x(i) + CONST * (left_flux - right_flux + down_flux - up_flux) + Q_extend;
 	}
 
+
+
+	template<typename Position>
+	const bool check(std::size_t x_index, std::size_t y_index) const
+	{
+		return Position::check(x_index, y_index);
+	}
+
 	const bool check_criterion() const
 	{
+		auto time_step = time_end / time_partitions;
+
 		return time_step / (x_step * x_step) + time_step / (y_step * y_step) < 1 / (2 * prop->thermal_diffusivity);
 	}
+
+	//const bool check_left_down_corner(std::size_t x_index, std::size_t y_index) const
+	//{
+	//	return x_index == 0 && y_index == 0;
+	//}
+
+	//const bool check_left_up_corner(std::size_t x_index, std::size_t y_index) const
+	//{
+	//	return x_index == 0 && y_index == temp->size_y() - 1;
+	//}
+
+	//const bool check_right_down_corner(std::size_t x_index, std::size_t y_index) const
+	//{
+	//	return x_index == temp->size_x() - 1 && y_index == 0;
+	//}
+
+	//const bool check_right_up_corner(std::size_t x_index, std::size_t y_index) const
+	//{
+	//	return x_index == temp->size_x() - 1 && y_index == temp->size_y() - 1;
+	//}
 };
 
 
@@ -320,9 +386,21 @@ public:
 		return *this;
 	}
 
-	Solver& set_time_step(const double& time_step)
+	Solver& set_boundary_conditions(const Boundary& boundary_conds)
 	{
-		scheme_->time_step = time_step;
+		scheme_->boundary_conditions = std::make_shared<Boundary>(boundary_conds);
+		return *this;
+	}
+
+	Solver& set_time_end(const double& time_end)
+	{
+		scheme_->time_end = time_end;
+		return *this;
+	}
+
+	Solver& set_time_partitions(const std::size_t& time_partitions)
+	{
+		scheme_->time_partitions = time_partitions;
 		return *this;
 	}
 
@@ -332,9 +410,15 @@ public:
 		return *this;
 	}
 
-	void solve()
+	std::shared_ptr<Temperature> solve()
 	{
-		scheme_->evaluate();
+		for (std::size_t time_index = 0, end_time_index = scheme_->time_partitions; time_index != end_time_index; ++time_index)
+		{
+			*scheme_->temp = scheme_->evaluate();
+		}
+
+		return scheme_->temp;
+
 	}
 };
 

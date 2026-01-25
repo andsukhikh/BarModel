@@ -24,6 +24,9 @@ const std::size_t ProxyArray::size() const
     return x_axis.size();
 }
 
+
+
+
 RegularGrid::RegularGrid(std::size_t total_number_of_point_x_axis, std::size_t total_number_of_point_y_axis)
     : y_axis(total_number_of_point_y_axis, ProxyArray(total_number_of_point_x_axis))
 {}
@@ -84,4 +87,44 @@ const std::size_t RegularGrid::size_y() const
 const std::size_t RegularGrid::count_digit(std::size_t number) const
 {
     return std::to_string(number).size();
+}
+
+const bool RegularGrid::is_lower_left(std::size_t x_index, std::size_t y_index) const
+{
+    return x_index == 0 && y_index == 0;
+}
+
+const bool RegularGrid::is_upper_left(std::size_t x_index, std::size_t y_index) const
+{
+    return x_index == 0 && y_index == y_axis.size() - 1;
+}
+
+const bool RegularGrid::is_upper_right(std::size_t x_index, std::size_t y_index) const
+{
+    return x_index == y_axis.back().size() - 1 && y_index == y_axis.size() - 1;
+}
+
+const bool RegularGrid::is_lower_right(std::size_t x_index, std::size_t y_index) const
+{
+    return x_index == y_axis.front().size() - 1;
+}
+
+const bool RegularGrid::is_left(std::size_t x_index, std::size_t y_index) const
+{
+    return x_index == 0;
+}
+
+const bool RegularGrid::is_right(std::size_t x_index, std::size_t y_index) const
+{
+    return x_index == y_axis.front().size() - 1;
+}
+
+const bool RegularGrid::is_up(std::size_t x_index, std::size_t y_index) const
+{
+    return y_index == y_axis.size() - 1;
+}
+
+const bool RegularGrid::is_down(std::size_t x_index, std::size_t y_index) const
+{
+    return y_index == 0;
 }

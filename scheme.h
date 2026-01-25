@@ -37,36 +37,35 @@ public:
 public:
 	Temperature evaluate() override;
 private:
-	template<typename Position>
-	void calculate_at(std::size_t i, std::size_t j/*, const std::optional<BoundaryCondition>& conditions = std::nullopt*/)
-	{
-		//if (conditions.has_value())
-		//{
-		//	decltype(auto) left_flux = prop->thermal_conductivity * y_step / x_step * (temp->along_y(j).along_x(i - 1) - temp->along_y(j).along_x(i));
-		//	decltype(auto) right_flux = prop->thermal_conductivity * y_step / x_step * (temp->along_y(j).along_x(i) - temp->along_y(j).along_x(i + 1));
+	//void calculate_at(std::size_t i, std::size_t j/*, const std::optional<BoundaryCondition>& conditions = std::nullopt*/)
+	//{
+	//	//if (conditions.has_value())
+	//	//{
+	//	//	decltype(auto) left_flux = prop->thermal_conductivity * y_step / x_step * (temp->along_y(j).along_x(i - 1) - temp->along_y(j).along_x(i));
+	//	//	decltype(auto) right_flux = prop->thermal_conductivity * y_step / x_step * (temp->along_y(j).along_x(i) - temp->along_y(j).along_x(i + 1));
 
-		//	decltype(auto) down_flux = prop->thermal_conductivity * x_step / y_step * (temp->along_y(j - 1).along_x(i) - temp->along_y(j).along_x(i));
-		//	decltype(auto) up_flux = prop->thermal_conductivity * x_step / y_step * (temp->along_y(j).along_x(i) - temp->along_y(j + 1).along_x(i));
+	//	//	decltype(auto) down_flux = prop->thermal_conductivity * x_step / y_step * (temp->along_y(j - 1).along_x(i) - temp->along_y(j).along_x(i));
+	//	//	decltype(auto) up_flux = prop->thermal_conductivity * x_step / y_step * (temp->along_y(j).along_x(i) - temp->along_y(j + 1).along_x(i));
 
-		//	new_temp->along_y(j).along_x(i) = temp->along_y(j).along_x(i) + CONST * (left_flux - right_flux + down_flux - up_flux) + Q_extend;
-		//}
+	//	//	new_temp->along_y(j).along_x(i) = temp->along_y(j).along_x(i) + CONST * (left_flux - right_flux + down_flux - up_flux) + Q_extend;
+	//	//}
 
-		decltype(auto) left_flux = prop->thermal_conductivity * y_step / x_step * (temp->along_y(j).along_x(i - 1) - temp->along_y(j).along_x(i));
-		decltype(auto) right_flux = prop->thermal_conductivity * y_step / x_step * (temp->along_y(j).along_x(i) - temp->along_y(j).along_x(i + 1));
+	//	decltype(auto) left_flux = prop->thermal_conductivity * y_step / x_step * (temp->along_y(j).along_x(i - 1) - temp->along_y(j).along_x(i));
+	//	decltype(auto) right_flux = prop->thermal_conductivity * y_step / x_step * (temp->along_y(j).along_x(i) - temp->along_y(j).along_x(i + 1));
 
-		decltype(auto) down_flux = prop->thermal_conductivity * x_step / y_step * (temp->along_y(j - 1).along_x(i) - temp->along_y(j).along_x(i));
-		decltype(auto) up_flux = prop->thermal_conductivity * x_step / y_step * (temp->along_y(j).along_x(i) - temp->along_y(j + 1).along_x(i));
+	//	decltype(auto) down_flux = prop->thermal_conductivity * x_step / y_step * (temp->along_y(j - 1).along_x(i) - temp->along_y(j).along_x(i));
+	//	decltype(auto) up_flux = prop->thermal_conductivity * x_step / y_step * (temp->along_y(j).along_x(i) - temp->along_y(j + 1).along_x(i));
 
-		new_temp->along_y(j).along_x(i) = temp->along_y(j).along_x(i) + CONST * (left_flux - right_flux + down_flux - up_flux) + Q_extend;
-	}
-
-	template<typename Position>
-	const bool check(std::size_t x_index, std::size_t y_index) const
-	{
-		return Position::check(x_index, y_index);
-	}
+	//	new_temp->along_y(j).along_x(i) = temp->along_y(j).along_x(i) + CONST * (left_flux - right_flux + down_flux - up_flux) + Q_extend;
+	//}
 
 	const bool check_criterion() const;
+};
+
+
+class ExplicitSchemeLowerLeft : public IScheme
+{
+	Temperature evaluate() override;
 };
 
 #endif // !SCHEME_H

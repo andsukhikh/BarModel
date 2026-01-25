@@ -28,8 +28,3 @@ double ThirdBoundaryCondition::at_point(const double temperature)
     return heat_transfer_coefficient_ * (temperature - external_temperature_);
 }
 
-
-const bool LowerRight::check(std::size_t x_index, std::size_t y_index)
-{
-    return x_index == 0 && y_index == 0;
-}

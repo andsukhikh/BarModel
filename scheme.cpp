@@ -13,7 +13,7 @@ Temperature ExplicitScheme::evaluate()
 		{
 			for (std::size_t x_index = 0, x_end_index = temp->size_x() - 1; x_index != x_end_index; ++x_index)
 			{
-				if (check<LowerRight>(x_index, y_index)) calculate_at<LowerRight>(x_index, y_index);
+				if (temp->is_lower_left(x_index, y_index)) ;
 			}
 		}
 	}

@@ -34,6 +34,7 @@ public:
 
 class RegularGrid
 {
+public:
 	std::vector<ProxyArray> y_axis;
 public:
 	RegularGrid(std::size_t total_number_of_point_x_axis, std::size_t total_number_of_point_y_axis);
@@ -46,8 +47,26 @@ public:
 
 	const std::size_t size_y() const;
 
+	const bool is_lower_left(std::size_t x_index, std::size_t y_index) const;
+
+	const bool is_upper_left(std::size_t x_index, std::size_t y_index) const;
+
+	const bool is_upper_right(std::size_t x_index, std::size_t y_index) const;
+
+	const bool is_lower_right(std::size_t x_index, std::size_t y_index) const;
+
+
+	const bool is_left(std::size_t x_index, std::size_t y_index) const;
+
+	const bool is_right(std::size_t x_index, std::size_t y_index) const;
+
+	const bool is_up(std::size_t x_index, std::size_t y_index) const;
+
+	const bool is_down(std::size_t x_index, std::size_t y_index) const;
+
 private:
 	const std::size_t count_digit(std::size_t number) const;
 };
+
 
 #endif GRID_H

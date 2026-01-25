@@ -10,11 +10,11 @@
 #include "solver.h"
 
 
-//Solver& Solver::set_scheme(const IScheme& scheme)
-//{
-//    scheme_ = std::make_shared<IScheme>(scheme);
-//    return *this;
-//}
+Solver& Solver::set_scheme(std::shared_ptr<IScheme> scheme)
+{
+    scheme_ = std::move(scheme);
+    return *this;
+}
 
 Solver& Solver::set_prop(const Properties& prop)
 {

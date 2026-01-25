@@ -7,11 +7,11 @@
 
 class Solver
 {
-	std::shared_ptr<ExplicitScheme> scheme_;
+	std::shared_ptr<IScheme> scheme_;
 public:
 	Solver() = default;
 
-	//Solver& set_scheme(const IScheme& scheme);
+	Solver& set_scheme(std::shared_ptr <IScheme> scheme);
 
 	Solver& set_prop(const Properties& prop);
 

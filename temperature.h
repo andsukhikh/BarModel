@@ -12,7 +12,7 @@ public:
 
 	Temperature(const RegularGrid& grid);
 
-
+	void set_initial_values(double values);
 };
 
 #endif // !TEMPERATURE_H

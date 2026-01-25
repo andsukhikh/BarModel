@@ -14,10 +14,10 @@ double& ProxyArray::along_x(std::size_t index)
     return x_axis.at(index);
 }
 
-decltype(auto) ProxyArray::begin()          { return x_axis.begin(); }
-decltype(auto) ProxyArray::end()            { return x_axis.end(); }
-decltype(auto) ProxyArray::cbegin() const   { return x_axis.cbegin(); }
-decltype(auto) ProxyArray::cend() const     { return x_axis.cend(); }
+std::vector<double>::iterator ProxyArray::begin()          { return x_axis.begin(); }
+std::vector<double>::iterator ProxyArray::end()            { return x_axis.end(); }
+std::vector<double>::const_iterator ProxyArray::cbegin() const   { return x_axis.cbegin(); }
+std::vector<double>::const_iterator ProxyArray::cend() const     { return x_axis.cend(); }
 
 const std::size_t ProxyArray::size() const
 {
@@ -111,20 +111,20 @@ const bool RegularGrid::is_lower_right(std::size_t x_index, std::size_t y_index)
 
 const bool RegularGrid::is_left(std::size_t x_index, std::size_t y_index) const
 {
-    return x_index == 0;
+    return x_index == 0 && !is_lower_left(x_index, y_index) && !is_upper_left(x_index, y_index);
 }
 
 const bool RegularGrid::is_right(std::size_t x_index, std::size_t y_index) const
 {
-    return x_index == y_axis.front().size() - 1;
+    return x_index == y_axis.front().size() - 1 && !is_lower_right(x_index, y_index) && !is_upper_right(x_index, y_index);
 }
 
 const bool RegularGrid::is_up(std::size_t x_index, std::size_t y_index) const
 {
-    return y_index == y_axis.size() - 1;
+    return y_index == y_axis.size() - 1 && !is_upper_left(x_index, y_index) && !is_upper_right(x_index, y_index);
 }
 
 const bool RegularGrid::is_down(std::size_t x_index, std::size_t y_index) const
 {
-    return y_index == 0;
+    return y_index == 0 && !is_lower_left(x_index, y_index) && !is_lower_right(x_index, y_index);
 }

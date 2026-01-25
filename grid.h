@@ -20,13 +20,13 @@ public:
 
 	double& along_x(std::size_t index);
 
-	decltype(auto) begin();
+	std::vector<double>::iterator begin();
 
-	decltype(auto) end();
+	std::vector<double>::iterator end();
 
-	decltype(auto) cbegin() const;
+	std::vector<double>::const_iterator cbegin() const;
 
-	decltype(auto) cend() const;
+	std::vector<double>::const_iterator cend() const;
 
 	const std::size_t size() const;
 };

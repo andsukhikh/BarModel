@@ -10,14 +10,6 @@
 
 struct IScheme
 {
-	virtual ~IScheme() = 0;
-	virtual Temperature evaluate() = 0;
-};
-
-
-class ExplicitScheme : public IScheme
-{
-public:
 	std::shared_ptr<Temperature> temp;
 
 	std::shared_ptr<Properties> prop;
@@ -31,41 +23,92 @@ public:
 	double y_step;
 
 	double Q_extend;
+	double CONST;
 
 	std::shared_ptr<Temperature> new_temp = temp;
-	double CONST;
-public:
-	Temperature evaluate() override;
-private:
-	//void calculate_at(std::size_t i, std::size_t j/*, const std::optional<BoundaryCondition>& conditions = std::nullopt*/)
-	//{
-	//	//if (conditions.has_value())
-	//	//{
-	//	//	decltype(auto) left_flux = prop->thermal_conductivity * y_step / x_step * (temp->along_y(j).along_x(i - 1) - temp->along_y(j).along_x(i));
-	//	//	decltype(auto) right_flux = prop->thermal_conductivity * y_step / x_step * (temp->along_y(j).along_x(i) - temp->along_y(j).along_x(i + 1));
 
-	//	//	decltype(auto) down_flux = prop->thermal_conductivity * x_step / y_step * (temp->along_y(j - 1).along_x(i) - temp->along_y(j).along_x(i));
-	//	//	decltype(auto) up_flux = prop->thermal_conductivity * x_step / y_step * (temp->along_y(j).along_x(i) - temp->along_y(j + 1).along_x(i));
-
-	//	//	new_temp->along_y(j).along_x(i) = temp->along_y(j).along_x(i) + CONST * (left_flux - right_flux + down_flux - up_flux) + Q_extend;
-	//	//}
-
-	//	decltype(auto) left_flux = prop->thermal_conductivity * y_step / x_step * (temp->along_y(j).along_x(i - 1) - temp->along_y(j).along_x(i));
-	//	decltype(auto) right_flux = prop->thermal_conductivity * y_step / x_step * (temp->along_y(j).along_x(i) - temp->along_y(j).along_x(i + 1));
-
-	//	decltype(auto) down_flux = prop->thermal_conductivity * x_step / y_step * (temp->along_y(j - 1).along_x(i) - temp->along_y(j).along_x(i));
-	//	decltype(auto) up_flux = prop->thermal_conductivity * x_step / y_step * (temp->along_y(j).along_x(i) - temp->along_y(j + 1).along_x(i));
-
-	//	new_temp->along_y(j).along_x(i) = temp->along_y(j).along_x(i) + CONST * (left_flux - right_flux + down_flux - up_flux) + Q_extend;
-	//}
-
-	const bool check_criterion() const;
+	virtual ~IScheme() = 0;
+	virtual Temperature evaluate() = 0;
 };
 
 
-class ExplicitSchemeLowerLeft : public IScheme
+struct ExplicitSchemeInner : public IScheme
 {
 	Temperature evaluate() override;
+};
+
+
+struct ExplicitSchemeLowerLeft : public IScheme
+{
+	Temperature evaluate() override;
+};
+
+
+struct ExplicitSchemeUpperLeft : public IScheme
+{
+	Temperature evaluate() override;
+};
+
+
+struct ExplicitSchemeUpperRight : public IScheme
+{
+	Temperature evaluate() override;
+};
+
+
+struct ExplicitSchemeLowerRight : public IScheme
+{
+	Temperature evaluate() override;
+};
+
+
+struct ExplicitSchemeLeft : public IScheme
+{
+	Temperature evaluate() override;
+};
+
+
+struct ExplicitSchemeRight : public IScheme
+{
+	Temperature evaluate() override;
+};
+
+
+struct ExplicitSchemeDown : public IScheme
+{
+	Temperature evaluate() override;
+};
+
+
+struct ExplicitSchemeUp : public IScheme
+{
+	Temperature evaluate() override;
+};
+
+
+class Context
+{
+protected:
+	std::shared_ptr<IScheme> strategy;
+public:
+	virtual ~Context() {}
+	virtual void use_strategy() = 0;
+	virtual Context& set_strategy(std::shared_ptr<IScheme> str) = 0;
+};
+
+
+class ExplicitScheme : public IScheme, public Context
+{
+public:
+	Temperature evaluate() override;
+private:
+	void calculate_at(std::size_t i, std::size_t j);
+
+	void use_strategy() override;
+
+	Context& set_strategy(std::shared_ptr<IScheme> str) override;
+
+	const bool check_criterion() const;
 };
 
 #endif // !SCHEME_H

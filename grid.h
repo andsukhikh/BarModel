@@ -1,0 +1,53 @@
+#ifndef GRID_H
+#define GRID_H
+
+#include <vector>
+
+//  	 X	
+//  	^
+//   3	| 1 - 2 - 3 - 4 - 5
+//   	| |   |   |   |   |
+//   2	| 1 - 2 - 3 - 4 - 5
+//   	| |   |   |   |   |
+//   1	| 1 - 2 - 3 - 4 - 5
+//  	*--------------------> Y
+
+class ProxyArray
+{
+	std::vector<double> x_axis;
+public:
+	ProxyArray(std::size_t total_number_of_point_x_axis);
+
+	double& along_x(std::size_t index);
+
+	decltype(auto) begin();
+
+	decltype(auto) end();
+
+	decltype(auto) cbegin() const;
+
+	decltype(auto) cend() const;
+
+	const std::size_t size() const;
+};
+
+
+class RegularGrid
+{
+	std::vector<ProxyArray> y_axis;
+public:
+	RegularGrid(std::size_t total_number_of_point_x_axis, std::size_t total_number_of_point_y_axis);
+
+	ProxyArray& along_y(std::size_t index);
+
+	void show();
+
+	const std::size_t size_x() const;
+
+	const std::size_t size_y() const;
+
+private:
+	const std::size_t count_digit(std::size_t number) const;
+};
+
+#endif GRID_H

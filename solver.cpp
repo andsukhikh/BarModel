@@ -12,7 +12,7 @@
 
 Solver& Solver::set_scheme(std::shared_ptr<IScheme> scheme)
 {
-    scheme_ = std::move(scheme);
+    scheme_ = scheme;
     return *this;
 }
 
@@ -54,10 +54,9 @@ Solver& Solver::set_Q_extend(double Q_extend)
 
 std::shared_ptr<Temperature> Solver::solve()
 {
-    for (std::size_t time_index = 0, end_time_index = scheme_->time_partitions;
-        time_index != end_time_index; ++time_index)
+    for (std::size_t time_index = 0, end_time_index = scheme_->time_partitions; time_index != end_time_index; ++time_index)
     {
-        *scheme_->temp = scheme_->evaluate();
+        scheme_->evaluate();
     }
     return scheme_->temp;
 }

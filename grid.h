@@ -14,7 +14,7 @@
 
 class ProxyArray
 {
-	std::vector<double> x_axis;
+	std::vector<double> x_axis_;
 public:
 	ProxyArray(std::size_t total_number_of_point_x_axis);
 
@@ -35,7 +35,7 @@ public:
 class RegularGrid
 {
 public:
-	std::vector<ProxyArray> y_axis;
+	std::vector<ProxyArray> y_axis_;
 public:
 	RegularGrid(std::size_t total_number_of_point_x_axis, std::size_t total_number_of_point_y_axis);
 

@@ -11,7 +11,7 @@ Temperature::Temperature(const RegularGrid& grid)
 
 void Temperature::set_initial_values(double values)
 {
-    for (auto&& y_line : y_axis)
+    for (auto&& y_line : y_axis_)
     {
         std::fill(y_line.begin(), y_line.end(), values);
     }

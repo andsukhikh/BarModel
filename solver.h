@@ -28,5 +28,6 @@ public:
 	std::shared_ptr<Temperature> solve();
 };
 
+
 #endif // !SOLVER_H
 

@@ -10,7 +10,7 @@
 
 struct IScheme
 {
-	std::shared_ptr<Temperature> temp;
+	Temperature temp;
 
 	std::shared_ptr<Properties> prop;
 
@@ -18,6 +18,7 @@ struct IScheme
 
 	std::size_t time_partitions;
 	double time_end;
+	double time_step;
 
 	double x_step;
 	double y_step;
@@ -25,32 +26,32 @@ struct IScheme
 	double Q_extend;
 	double CONST;
 
-	std::shared_ptr<Temperature> new_temp;
+	Temperature new_temp;
 
 	virtual ~IScheme() = default;
 	virtual void evaluate() = 0;
 };
 
 
-struct IExplicitScheme
-{
-	virtual ~IExplicitScheme() = default;
-	virtual void evaluate(std::size_t i, std::size_t j) = 0;
-};
+//struct IExplicitScheme
+//{
+//	virtual ~IExplicitScheme() = default;
+//	virtual void evaluate(std::size_t i, std::size_t j) = 0;
+//};
+//
+//
+//class ExplicitSchemeSwitcher
+//{
+//protected:
+//	std::shared_ptr<IExplicitScheme> strategy_;
+//public:
+//	virtual ~ExplicitSchemeSwitcher() = default;
+//	virtual void use_strategy(std::size_t i, std::size_t j) = 0;
+//	virtual ExplicitSchemeSwitcher& set_strategy(std::shared_ptr<IExplicitScheme> str) = 0;
+//};
 
 
-class ExplicitSchemeSwitcher
-{
-protected:
-	std::shared_ptr<IExplicitScheme> strategy_;
-public:
-	virtual ~ExplicitSchemeSwitcher() = default;
-	virtual void use_strategy(std::size_t i, std::size_t j) = 0;
-	virtual ExplicitSchemeSwitcher& set_strategy(std::shared_ptr<IExplicitScheme> str) = 0;
-};
-
-
-class ExplicitScheme : public IScheme, public ExplicitSchemeSwitcher
+class ExplicitScheme : public IScheme/*, public ExplicitSchemeSwitcher*/
 {
 public:
 	void evaluate() override;
@@ -67,100 +68,100 @@ private:
 	void up_explicit_scheme(std::size_t i, std::size_t j);
 	void down_explicit_scheme(std::size_t i, std::size_t j);
 
-	void use_strategy(std::size_t i, std::size_t j) override;
+	//void use_strategy(std::size_t i, std::size_t j) override;
 
-	ExplicitSchemeSwitcher& set_strategy(std::shared_ptr<IExplicitScheme> strategy) override;
+	//ExplicitSchemeSwitcher& set_strategy(std::shared_ptr<IExplicitScheme> strategy) override;
 
 	const bool check_criterion() const;
 };
 
-struct ExplicitSchemeInner : public IExplicitScheme
-{
-	std::shared_ptr<ExplicitScheme> scheme_;
-public:
-	ExplicitSchemeInner(ExplicitScheme scheme);
-
-	void evaluate(std::size_t i, std::size_t j) override;
-};
-
-
-struct ExplicitSchemeLowerLeft : public IExplicitScheme
-{
-	std::shared_ptr<ExplicitScheme> scheme_;
-public:
-	ExplicitSchemeLowerLeft(ExplicitScheme scheme);
-
-	void evaluate(std::size_t i, std::size_t j) override;
-};
-
-
-struct ExplicitSchemeUpperLeft : public IExplicitScheme
-{
-	std::shared_ptr<ExplicitScheme> scheme_;
-public:
-	ExplicitSchemeUpperLeft(ExplicitScheme scheme);
-
-	void evaluate(std::size_t i, std::size_t j) override;
-};
-
-
-struct ExplicitSchemeUpperRight : public IExplicitScheme
-{
-	std::shared_ptr<ExplicitScheme> scheme_;
-public:
-	ExplicitSchemeUpperRight(ExplicitScheme scheme);
-
-	void evaluate(std::size_t i, std::size_t j) override;
-};
-
-
-struct ExplicitSchemeLowerRight : public IExplicitScheme
-{
-	std::shared_ptr<ExplicitScheme> scheme_;
-public:
-	ExplicitSchemeLowerRight(ExplicitScheme scheme);
-
-	void evaluate(std::size_t i, std::size_t j) override;
-};
-
-
-struct ExplicitSchemeLeft : public IExplicitScheme
-{
-	std::shared_ptr<ExplicitScheme> scheme_;
-public:
-	ExplicitSchemeLeft(ExplicitScheme scheme);
-
-	void evaluate(std::size_t i, std::size_t j) override;
-};
-
-
-struct ExplicitSchemeRight : public IExplicitScheme
-{
-	std::shared_ptr<ExplicitScheme> scheme_;
-public:
-	ExplicitSchemeRight(ExplicitScheme scheme);
-
-	void evaluate(std::size_t i, std::size_t j) override;
-};
-
-
-struct ExplicitSchemeDown : public IExplicitScheme
-{
-	std::shared_ptr<ExplicitScheme> scheme_;
-public:
-	ExplicitSchemeDown(ExplicitScheme scheme);
-
-	void evaluate(std::size_t i, std::size_t j) override;
-};
-
-
-struct ExplicitSchemeUp : public IExplicitScheme
-{
-	std::shared_ptr<ExplicitScheme> scheme_;
-public:
-	ExplicitSchemeUp(ExplicitScheme scheme);
-
-	void evaluate(std::size_t i, std::size_t j) override;
-};
+//struct ExplicitSchemeInner : public IExplicitScheme
+//{
+//	std::shared_ptr<ExplicitScheme> scheme_;
+//public:
+//	ExplicitSchemeInner(ExplicitScheme scheme);
+//
+//	void evaluate(std::size_t i, std::size_t j) override;
+//};
+//
+//
+//struct ExplicitSchemeLowerLeft : public IExplicitScheme
+//{
+//	std::shared_ptr<ExplicitScheme> scheme_;
+//public:
+//	ExplicitSchemeLowerLeft(ExplicitScheme scheme);
+//
+//	void evaluate(std::size_t i, std::size_t j) override;
+//};
+//
+//
+//struct ExplicitSchemeUpperLeft : public IExplicitScheme
+//{
+//	std::shared_ptr<ExplicitScheme> scheme_;
+//public:
+//	ExplicitSchemeUpperLeft(ExplicitScheme scheme);
+//
+//	void evaluate(std::size_t i, std::size_t j) override;
+//};
+//
+//
+//struct ExplicitSchemeUpperRight : public IExplicitScheme
+//{
+//	std::shared_ptr<ExplicitScheme> scheme_;
+//public:
+//	ExplicitSchemeUpperRight(ExplicitScheme scheme);
+//
+//	void evaluate(std::size_t i, std::size_t j) override;
+//};
+//
+//
+//struct ExplicitSchemeLowerRight : public IExplicitScheme
+//{
+//	std::shared_ptr<ExplicitScheme> scheme_;
+//public:
+//	ExplicitSchemeLowerRight(ExplicitScheme scheme);
+//
+//	void evaluate(std::size_t i, std::size_t j) override;
+//};
+//
+//
+//struct ExplicitSchemeLeft : public IExplicitScheme
+//{
+//	std::shared_ptr<ExplicitScheme> scheme_;
+//public:
+//	ExplicitSchemeLeft(ExplicitScheme scheme);
+//
+//	void evaluate(std::size_t i, std::size_t j) override;
+//};
+//
+//
+//struct ExplicitSchemeRight : public IExplicitScheme
+//{
+//	std::shared_ptr<ExplicitScheme> scheme_;
+//public:
+//	ExplicitSchemeRight(ExplicitScheme scheme);
+//
+//	void evaluate(std::size_t i, std::size_t j) override;
+//};
+//
+//
+//struct ExplicitSchemeDown : public IExplicitScheme
+//{
+//	std::shared_ptr<ExplicitScheme> scheme_;
+//public:
+//	ExplicitSchemeDown(ExplicitScheme scheme);
+//
+//	void evaluate(std::size_t i, std::size_t j) override;
+//};
+//
+//
+//struct ExplicitSchemeUp : public IExplicitScheme
+//{
+//	std::shared_ptr<ExplicitScheme> scheme_;
+//public:
+//	ExplicitSchemeUp(ExplicitScheme scheme);
+//
+//	void evaluate(std::size_t i, std::size_t j) override;
+//};
 
 #endif // !SCHEME_H

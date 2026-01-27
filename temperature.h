@@ -8,11 +8,12 @@
 class Temperature : public RegularGrid
 {
 public:
+	Temperature() = default;
 	Temperature(std::size_t total_number_of_point_x_axis, std::size_t total_number_of_point_y_axis);
 
 	Temperature(const RegularGrid& grid);
 
-	void set_initial_values(double values);
+	void fill(double values);
 };
 
 #endif // !TEMPERATURE_H

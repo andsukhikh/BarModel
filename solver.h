@@ -11,7 +11,7 @@ class Solver
 public:
 	Solver() = default;
 
-	Solver& set_scheme(std::shared_ptr <IScheme> scheme);
+	Solver& set_scheme(std::shared_ptr<IScheme> scheme);
 
 	Solver& set_prop(const Properties& prop);
 
@@ -25,7 +25,10 @@ public:
 
 	Solver& set_Q_extend(double Q_extend);
 
-	std::shared_ptr<Temperature> solve();
+	Solver& set_initial_values(double init_temp);
+
+
+	Temperature solve();
 };
 
 

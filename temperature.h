@@ -14,6 +14,7 @@ public:
 	Temperature(const RegularGrid& grid);
 
 	void fill(double values);
+	void show();
 };
 
 #endif // !TEMPERATURE_H

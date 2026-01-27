@@ -147,12 +147,12 @@ void RegularGrid::show()
     std::cout << std::setw(max_number_digit_y) << " " << "X" << "\n"
         << std::setw(max_number_digit_y) << " " << "^" << "\n";
 
-    for (auto iterator_y = grid_.rbegin(); iterator_y != grid_.rend(); ++iterator_y)
+    for (auto iterator_y = grid_.rbegin(), iterator_y_end = grid_.rend(); iterator_y != iterator_y_end; ++iterator_y)
     {
         auto index = grid_.crend() - iterator_y;
         std::cout << std::setw(max_number_digit_y) << index << "|";
 
-        for (auto iterator_x = iterator_y->cbegin(); iterator_x != iterator_y->cend(); ++iterator_x)
+        for (auto iterator_x = iterator_y->cbegin(), iterator_x_end = iterator_y->cend(); iterator_x != iterator_x_end; ++iterator_x)
         {
             auto index_x = iterator_x - iterator_y->cbegin() + 1;
             std::cout << index_x;
@@ -166,7 +166,7 @@ void RegularGrid::show()
         if (iterator_y != grid_.crend() - 1)
         {
             std::cout << std::setw(y_axis_indent) << "|";
-            for (auto iterator_x = iterator_y->cbegin(); iterator_x != iterator_y->cend(); ++iterator_x)
+            for (auto iterator_x = iterator_y->cbegin(), iterator_x_end = iterator_y->cend(); iterator_x != iterator_x_end; ++iterator_x)
             {
                 auto index_x = iterator_x - iterator_y->cbegin() + 1;
                 auto digit_number = count_digit(index_x);

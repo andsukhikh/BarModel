@@ -26,15 +26,14 @@ int main()
 
 	try
 	{
-		Temperature temp = Solver()		.set_scheme(std::make_shared<ExplicitScheme>())
-										.set_grid(grid)
-										.set_boundary_conditions(conditions)
-										.set_prop(thermal_prop)
-										.set_Q_extend(0)
-										.set_initial_values(100)
-										.set_time_end(2000)
-										.set_time_partitions(2000)
-										.solve();
+		Temperature temp = Solver<ExplicitScheme>() .set_grid(grid)
+													.set_boundary_conditions(conditions)
+													.set_prop(thermal_prop)
+													.set_Q_extend(0)
+													.set_initial_values(100)
+													.set_time_end(2000)
+													.set_time_partitions(2000)
+													.solve();
 		temp.show();
 	}
 	catch (const std::exception& ex)

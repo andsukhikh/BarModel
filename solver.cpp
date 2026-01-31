@@ -1,75 +1,71 @@
-#include <vector>
-#include <iostream>
-#include <memory>
-#include <format>
-#include <string>
-#include <iomanip>
-#include <exception>
-#include <optional>
-
 #include "solver.h"
 
 
-Solver& Solver::set_scheme(std::shared_ptr<IScheme> scheme)
+template class Solver<ExplicitScheme>;
+
+
+template<typename Scheme>
+Solver<Scheme>&& Solver<Scheme>::set_prop(const Properties& prop) &&
 {
-    scheme_ = scheme;
-    return *this;
+    this->prop = std::make_shared<Properties>(prop);
+    return std::move(*this);
 }
 
-Solver& Solver::set_prop(const Properties& prop)
+template<typename Scheme>
+Solver<Scheme>&& Solver<Scheme>::set_grid(const RegularGrid& grid) &&
 {
-    scheme_->prop = std::make_shared<Properties>(prop);
-    return *this;
+    this->temp = Temperature(grid);
+    return std::move(*this);
 }
 
-Solver& Solver::set_grid(const RegularGrid& grid)
+template<typename Scheme>
+Solver<Scheme>&& Solver<Scheme>::set_boundary_conditions(const Boundary& boundary_conds) && 
 {
-    scheme_->temp = Temperature(grid);
-    return *this;
+    this->boundary_conditions = std::make_shared<Boundary>(boundary_conds);
+    return std::move(*this);
 }
 
-Solver& Solver::set_boundary_conditions(const Boundary& boundary_conds)
+template<typename Scheme>
+Solver<Scheme>&& Solver<Scheme>::set_time_end(double time_end) &&
 {
-    scheme_->boundary_conditions = std::make_shared<Boundary>(boundary_conds);
-    return *this;
+    this->time_end = time_end;
+    return std::move(*this);
 }
 
-Solver& Solver::set_time_end(double time_end)
+template<typename Scheme>
+Solver<Scheme>&& Solver<Scheme>::set_time_partitions(std::size_t time_partitions) &&
 {
-    scheme_->time_end = time_end;
-    return *this;
+    this->time_partitions = time_partitions;
+    return std::move(*this);
 }
 
-Solver& Solver::set_time_partitions(std::size_t time_partitions)
+template<typename Scheme>
+Solver<Scheme>&& Solver<Scheme>::set_Q_extend(double Q_extend) &&
 {
-    scheme_->time_partitions = time_partitions;
-    return *this;
+    this->Q_extend = Q_extend;
+    return std::move(*this);
 }
 
-Solver& Solver::set_Q_extend(double Q_extend)
+template<typename Scheme>
+Solver<Scheme>&& Solver<Scheme>::set_initial_values(double init_temp) &&
 {
-    scheme_->Q_extend = Q_extend;
-    return *this;
+    this->temp.fill(init_temp);
+    return std::move(*this);
 }
 
-Solver& Solver::set_initial_values(double init_temp)
+template<typename Scheme>
+Temperature Solver<Scheme>::solve() &&
 {
-    scheme_->temp.fill(init_temp);
-    return *this;
-}
+    this->x_step = this->prop->length / (this->temp.size_x() - 1);
+    this->y_step = this->prop->width / (this->temp.size_y() - 1);
 
-Temperature Solver::solve()
-{
-    scheme_->x_step = scheme_->prop->length / (scheme_->temp.size_x() - 1);
-    scheme_->y_step = scheme_->prop->width / (scheme_->temp.size_y() - 1);
+    this->time_step = this->time_end / this->time_partitions;
 
-    scheme_->time_step = scheme_->time_end / scheme_->time_partitions;
+    this->new_temp = this->temp;
 
-    scheme_->new_temp = scheme_->temp;
-
-    for (std::size_t time_index = 0, end_time_index = scheme_->time_partitions; time_index != end_time_index; ++time_index)
+    for (std::size_t time_index = 0, end_time_index = this->time_partitions; time_index != end_time_index; ++time_index)
     {
-        scheme_->evaluate();
+        this->evaluate();
     }
-    return scheme_->temp;
+    return std::move(this->temp);
 }

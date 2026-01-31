@@ -5,30 +5,27 @@
 
 #include "scheme.h"
 
-class Solver
+
+template<typename Scheme>
+class Solver : public Scheme
 {
-	std::shared_ptr<IScheme> scheme_;
 public:
-	Solver() = default;
+	Solver&& set_prop(const Properties& prop) &&;
 
-	Solver& set_scheme(std::shared_ptr<IScheme> scheme);
+	Solver&& set_grid(const RegularGrid& grid) &&;
 
-	Solver& set_prop(const Properties& prop);
+	Solver&& set_boundary_conditions(const Boundary& boundary_conds) &&;
 
-	Solver& set_grid(const RegularGrid& grid);
+	Solver&& set_time_end(double time_end) &&;
 
-	Solver& set_boundary_conditions(const Boundary& boundary_conds);
+	Solver&& set_time_partitions(std::size_t time_partitions) &&;
 
-	Solver& set_time_end(double time_end);
+	Solver&& set_Q_extend(double Q_extend) &&;
 
-	Solver& set_time_partitions(std::size_t time_partitions);
-
-	Solver& set_Q_extend(double Q_extend);
-
-	Solver& set_initial_values(double init_temp);
+	Solver&& set_initial_values(double init_temp) &&;
 
 
-	Temperature solve();
+	Temperature solve() &&;
 };
 
 

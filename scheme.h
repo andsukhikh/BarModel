@@ -8,9 +8,11 @@
 #include "boundary.h"
 
 
-struct IScheme
+class ExplicitScheme /*: public IScheme, public ExplicitSchemeSwitcher*/
 {
+protected:
 	Temperature temp;
+	Temperature new_temp;
 
 	std::shared_ptr<Properties> prop;
 
@@ -26,35 +28,8 @@ struct IScheme
 	double Q_extend;
 	double CONST;
 
-	Temperature new_temp;
-
-	virtual ~IScheme() = default;
-	virtual void evaluate() = 0;
-};
-
-
-//struct IExplicitScheme
-//{
-//	virtual ~IExplicitScheme() = default;
-//	virtual void evaluate(std::size_t i, std::size_t j) = 0;
-//};
-//
-//
-//class ExplicitSchemeSwitcher
-//{
-//protected:
-//	std::shared_ptr<IExplicitScheme> strategy_;
-//public:
-//	virtual ~ExplicitSchemeSwitcher() = default;
-//	virtual void use_strategy(std::size_t i, std::size_t j) = 0;
-//	virtual ExplicitSchemeSwitcher& set_strategy(std::shared_ptr<IExplicitScheme> str) = 0;
-//};
-
-
-class ExplicitScheme : public IScheme/*, public ExplicitSchemeSwitcher*/
-{
-public:
-	void evaluate() override;
+protected:
+	void evaluate();
 private:
 	void inner_explicit_scheme(std::size_t i, std::size_t j);
 

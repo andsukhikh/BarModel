@@ -12,37 +12,15 @@
 //   1	| 1 - 2 - 3 - 4 - 5
 //  	*--------------------> Y
 
-class ProxyArray
-{
-	std::vector<double> x_axis_;
-public:
-	ProxyArray(std::size_t total_number_of_point_x_axis);
-
-	double& along_x(std::size_t index);
-
-	std::vector<double>::iterator begin();
-
-	std::vector<double>::iterator end();
-
-	std::vector<double>::const_iterator cbegin() const;
-
-	std::vector<double>::const_iterator cend() const;
-
-	const std::size_t size() const;
-};
-
-
 class RegularGrid
 {
-public:
-	//std::vector<ProxyArray> y_axis_;
+protected:
 	std::vector<std::vector<double>> grid_;
 public:
 	RegularGrid(std::size_t total_number_of_point_x_axis, std::size_t total_number_of_point_y_axis);
+
 	RegularGrid() = default;
 
-
-	//ProxyArray& along_y(std::size_t index);
 	double& operator() (std::size_t x_index, std::size_t y_index);
 
 	void show();

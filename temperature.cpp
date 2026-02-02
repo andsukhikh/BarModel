@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
 
 #include "temperature.h"
 
@@ -35,4 +36,35 @@ void Temperature::show()
         }
         std::cout << "\n";
     }
+    std::cout << "\n";
+}
+
+void Temperature::to_Kelvin_deg()
+{
+    if (flag_ & ConvertFlags::is_Kelvin) return;
+
+    for (auto&& y_line : grid_)
+    {
+        std::for_each(y_line.begin(), y_line.end(), [](double& temp)
+            {
+                temp += 273.15;
+            });
+    }
+
+    flag_ = is_Kelvin;
+}
+
+void Temperature::to_Celsius_deg()
+{
+    if (flag_ & ConvertFlags::is_Celsium) return;
+
+    for (auto&& y_line : grid_)
+    {
+        std::for_each(y_line.begin(), y_line.end(), [](double& temp)
+            {
+                temp -= 273.15;
+            });
+    }
+
+    flag_ = is_Celsium;
 }

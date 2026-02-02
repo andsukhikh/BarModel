@@ -49,11 +49,5 @@ struct Boundary
 	std::shared_ptr<BoundaryCondition> down_boundary;
 };
 
-
-struct LowerRight
-{
-	static const bool check(std::size_t x_index, std::size_t y_index);
-};
-
 #endif // !BOUNDARY_H
 

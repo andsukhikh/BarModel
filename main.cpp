@@ -1,7 +1,7 @@
 #include "solver.h"
 
 #include <iostream>
-#include <iomanip>
+#include <bitset>
 
 int main()
 {
@@ -34,6 +34,7 @@ int main()
 													.set_time_end(2000)
 													.set_time_partitions(2000)
 													.solve();
+		//temp.to_Kelvin_deg();
 		temp.show();
 	}
 	catch (const std::exception& ex)

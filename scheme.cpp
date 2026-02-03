@@ -6,6 +6,7 @@
 void ExplicitScheme::evaluate()
 {
 	CONST = time_step / (x_step * y_step * prop->heat_capacity * prop->density);
+	
 
 	if (!check_criterion()) throw std::runtime_error("The convergence condition of the difference scheme is not met: coarse mesh or a small time step");
 
@@ -132,37 +133,3 @@ const bool ExplicitScheme::check_criterion() const
 {
 	return time_step / (x_step * x_step) + time_step / (y_step * y_step) < 1 / (2 * prop->thermal_diffusivity);
 }
-
-//ExplicitSchemeSwitcher& ExplicitScheme::set_strategy(std::shared_ptr<IExplicitScheme> strategy)
-//{
-//	strategy_ = strategy;
-//
-//	return *this;
-//}
-//
-//void ExplicitScheme::use_strategy(std::size_t i, std::size_t j)
-//{
-//	strategy_->evaluate(i, j);
-//}
-
-
-
-
-//ExplicitSchemeInner::ExplicitSchemeInner(ExplicitScheme scheme)
-//	:scheme_(std::make_shared<ExplicitScheme>(scheme))
-//{}
-//
-//
-//void ExplicitSchemeInner::evaluate(std::size_t i, std::size_t j)
-//{
-//	//auto left_flux = scheme_->prop->thermal_conductivity * scheme_->y_step / scheme_->x_step * (scheme_->temp->along_y(j).along_x(i - 1) - scheme_->temp->along_y(j).along_x(i));
-//	//auto right_flux = scheme_->prop->thermal_conductivity * scheme_->y_step / scheme_->x_step * (scheme_->temp->along_y(j).along_x(i) - scheme_->temp->along_y(j).along_x(i + 1));
-//
-//	//auto down_flux = scheme_->prop->thermal_conductivity * scheme_->x_step / scheme_->y_step * (scheme_->temp->along_y(j - 1).along_x(i) - scheme_->temp->along_y(j).along_x(i));
-//	//auto up_flux = scheme_->prop->thermal_conductivity * scheme_->x_step / scheme_->y_step * (scheme_->temp->along_y(j).along_x(i) - scheme_->temp->along_y(j + 1).along_x(i));
-//
-//	//scheme_->new_temp->along_y(j).along_x(i) = scheme_->temp->along_y(j).along_x(i) + scheme_->CONST * (left_flux - right_flux + down_flux - up_flux) + scheme_->Q_extend;
-//}
-
-
-

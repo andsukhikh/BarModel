@@ -5,19 +5,20 @@
 
 //  	 X	
 //  	^
-//   3	| 1 - 2 - 3 - 4 - 5
-//   	| |   |   |   |   |
-//   2	| 1 - 2 - 3 - 4 - 5
-//   	| |   |   |   |   |
-//   1	| 1 - 2 - 3 - 4 - 5
+//   2	| 10 - 11 - 12 - 13 - 14
+//   	| |    |    |    |    |
+//   1	| 5 -- 6 -- 7 -- 8 -- 9
+//   	| |    |    |    |    |
+//   0	| 0 -- 1 -- 2 -- 3 -- 4
 //  	*--------------------> Y
 
 class RegularGrid
 {
 protected:
-	std::vector<std::vector<double>> grid_;
+	std::vector<double> grid_;
+	std::vector<std::size_t> row_number_;
 public:
-	RegularGrid(std::size_t total_number_of_point_x_axis, std::size_t total_number_of_point_y_axis);
+	RegularGrid(std::size_t x_partitions_number, std::size_t y_partitions_number);
 
 	RegularGrid() = default;
 
@@ -46,7 +47,7 @@ public:
 
 	const bool is_down(std::size_t x_index, std::size_t y_index) const;
 
-private:
+protected:
 	const std::size_t count_digit(std::size_t number) const;
 };
 

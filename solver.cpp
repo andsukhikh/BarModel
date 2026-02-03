@@ -33,9 +33,9 @@ Solver<Scheme>&& Solver<Scheme>::set_time_end(double time_end) &&
 }
 
 template<typename Scheme>
-Solver<Scheme>&& Solver<Scheme>::set_time_partitions(std::size_t time_partitions) &&
+Solver<Scheme>&& Solver<Scheme>::set_time_step(std::size_t time_step) &&
 {
-    this->time_partitions = time_partitions;
+    this->time_step = time_step;
     return std::move(*this);
 }
 
@@ -59,11 +59,9 @@ Temperature Solver<Scheme>::solve() &&
     this->x_step = this->prop->length / (this->temp.size_x() - 1);
     this->y_step = this->prop->width / (this->temp.size_y() - 1);
 
-    this->time_step = this->time_end / this->time_partitions;
-
     this->new_temp = this->temp;
 
-    for (std::size_t time_index = 0, end_time_index = this->time_partitions; time_index != end_time_index; ++time_index)
+    for (std::size_t time_index = 0, end_time_index = this->time_end / this->time_step; time_index != end_time_index; ++time_index)
     {
         this->evaluate();
     }

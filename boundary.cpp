@@ -1,14 +1,5 @@
 #include "boundary.h"
 
-FirstBoundaryCondition::FirstBoundaryCondition(double external_temperature)
-    : external_temperature_(external_temperature)
-{}
-
-double FirstBoundaryCondition::at_point(const double temperature)
-{
-    return external_temperature_;
-}
-
 SecondBoundaryCondition::SecondBoundaryCondition(double flux)
     : flux_(flux)
 {}

@@ -17,14 +17,14 @@ class Temperature : public RegularGrid
 	ConvertFlags flag_ = is_Celsium;
 public:
 	Temperature() = default;
-	Temperature(std::size_t total_number_of_point_x_axis, std::size_t total_number_of_point_y_axis);
+	Temperature(std::size_t x_partitions_number, std::size_t y_partitions_number);
 
 	Temperature(const RegularGrid& grid);
 
 	void fill(double values);
 	void to_Kelvin_deg();
 	void to_Celsius_deg();
-	void show();
+	void show(std::size_t precision = 0);
 };
 
 #endif // !TEMPERATURE_H

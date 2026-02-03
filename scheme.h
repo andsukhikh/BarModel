@@ -19,7 +19,6 @@ protected:
 
 	std::shared_ptr<Boundary> boundary_conditions;
 
-	std::size_t time_partitions;
 	double time_end;
 	double time_step;
 

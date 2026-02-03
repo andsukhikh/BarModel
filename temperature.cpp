@@ -4,8 +4,8 @@
 
 #include "temperature.h"
 
-Temperature::Temperature(std::size_t total_number_of_point_x_axis, std::size_t total_number_of_point_y_axis)
-    : RegularGrid(total_number_of_point_x_axis, total_number_of_point_y_axis)
+Temperature::Temperature(std::size_t x_partitions_number, std::size_t y_partitions_number)
+    : RegularGrid(x_partitions_number, y_partitions_number)
 {}
 
 Temperature::Temperature(const RegularGrid& grid)
@@ -14,25 +14,21 @@ Temperature::Temperature(const RegularGrid& grid)
 
 void Temperature::fill(double values)
 {
-    for (auto&& y_line : grid_)
-    {
-        std::fill(y_line.begin(), y_line.end(), values);
-    }
+    std::fill(grid_.begin(), grid_.end(), values);
 }
 
-void Temperature::show()
+void Temperature::show(std::size_t precision)
 {
-    for (auto iterator_y = grid_.crbegin(), iterator_y_end = grid_.crend(); iterator_y != iterator_y_end; ++iterator_y)
+    auto number                       = std::max_element(grid_.begin(), grid_.end());
+    auto number_without_fract_part    = static_cast<std::size_t>(*number);
+    auto width = RegularGrid::count_digit(number_without_fract_part) + precision + 1;
+
+    for (auto&& row_offset : row_number_)
     {
-        for (auto iterator_x = iterator_y->cbegin(), iterator_x_end = iterator_y->cend(); iterator_x != iterator_x_end; ++iterator_x)
+        for (std::size_t x_index = 0, x_index_end = size_x(); x_index != x_index_end; ++x_index)
         {
-            std::cout.setf(std::ios::fixed);
-            std::cout.precision(1);
-
-            auto x_index = iterator_x - iterator_y->cbegin();
-            auto y_index = iterator_y_end - 1 - iterator_y;
-
-            std::cout << std::setw(5) << grid_[y_index][x_index] << "  ";
+            std::cout   << std::setw(width) << std::fixed << std::setprecision(precision)
+                        << grid_[row_offset + x_index] << "  ";
         }
         std::cout << "\n";
     }
@@ -43,13 +39,10 @@ void Temperature::to_Kelvin_deg()
 {
     if (flag_ & ConvertFlags::is_Kelvin) return;
 
-    for (auto&& y_line : grid_)
-    {
-        std::for_each(y_line.begin(), y_line.end(), [](double& temp)
-            {
-                temp += 273.15;
-            });
-    }
+    std::for_each(grid_.begin(), grid_.end(), [](double& temp)
+        {
+            temp += 273.15;
+        });
 
     flag_ = is_Kelvin;
 }
@@ -58,13 +51,10 @@ void Temperature::to_Celsius_deg()
 {
     if (flag_ & ConvertFlags::is_Celsium) return;
 
-    for (auto&& y_line : grid_)
-    {
-        std::for_each(y_line.begin(), y_line.end(), [](double& temp)
-            {
-                temp -= 273.15;
-            });
-    }
+    std::for_each(grid_.begin(), grid_.end(), [](double& temp)
+        {
+            temp -= 273.15;
+        });
 
     flag_ = is_Celsium;
 }

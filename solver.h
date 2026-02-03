@@ -18,7 +18,7 @@ public:
 
 	Solver&& set_time_end(double time_end) &&;
 
-	Solver&& set_time_partitions(std::size_t time_partitions) &&;
+	Solver&& set_time_step(std::size_t time_step) &&;
 
 	Solver&& set_Q_extend(double Q_extend) &&;
 

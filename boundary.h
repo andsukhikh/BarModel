@@ -10,16 +10,6 @@ struct BoundaryCondition
 };
 
 
-class FirstBoundaryCondition : public BoundaryCondition
-{
-	const double external_temperature_;
-public:
-	FirstBoundaryCondition(double external_temperature);
-
-	double at_point(const double temperature) override;
-};
-
-
 class SecondBoundaryCondition : public BoundaryCondition
 {
 	const double flux_;

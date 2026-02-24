@@ -33,10 +33,10 @@ public:
 
 struct Boundary
 {
-	std::shared_ptr<BoundaryCondition> left_boundary;
-	std::shared_ptr<BoundaryCondition> right_boundary;
-	std::shared_ptr<BoundaryCondition> up_boundary;
-	std::shared_ptr<BoundaryCondition> down_boundary;
+	std::shared_ptr<BoundaryCondition> left_boundary		= {};
+	std::shared_ptr<BoundaryCondition> right_boundary		= {};
+	std::shared_ptr<BoundaryCondition> up_boundary			= {};
+	std::shared_ptr<BoundaryCondition> down_boundary		= {};
 };
 
 #endif // !BOUNDARY_H

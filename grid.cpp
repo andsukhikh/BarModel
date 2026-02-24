@@ -10,7 +10,7 @@
 
 
 
-const std::size_t RegularGrid::count_digit(std::size_t number) const
+const std::size_t RegularGrid::count_digit(int number) const
 {
     return std::to_string(number).size();
 }
@@ -60,11 +60,10 @@ RegularGrid::RegularGrid(std::size_t x_partitions_number, std::size_t y_partitio
     , row_number_   (y_partitions_number)
 {
     std::size_t new_row_begin_index = 0;
-    std::generate_n(row_number_.begin(), y_partitions_number, [&]()
+    std::for_each(row_number_.begin(), row_number_.end(), [&](std::size_t& index)
         {
-            std::size_t index = new_row_begin_index;
+            index = new_row_begin_index;
             new_row_begin_index += x_partitions_number;
-            return index;
         });
 }
 

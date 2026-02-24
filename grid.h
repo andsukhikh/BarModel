@@ -48,7 +48,7 @@ public:
 	const bool is_down(std::size_t x_index, std::size_t y_index) const;
 
 protected:
-	const std::size_t count_digit(std::size_t number) const;
+	const std::size_t count_digit(int number) const;
 };
 
 

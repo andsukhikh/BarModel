@@ -1,8 +1,6 @@
 #ifndef SOLVER_H
 #define SOLVER_H
 
-#include <memory>
-
 #include "scheme.h"
 
 
@@ -22,7 +20,7 @@ public:
 
 	Solver&& set_Q_extend(double Q_extend) &&;
 
-	Solver&& set_initial_values(double init_temp) &&;
+	Solver&& set_initial_values(double temp_init) &&;
 
 
 	Temperature solve() &&;

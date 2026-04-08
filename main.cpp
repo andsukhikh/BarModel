@@ -40,14 +40,15 @@ int main()
 		matrix(0, 0) = 100;
 		matrix(1, 1) = 100;
 		matrix(2, 2) = 100;
-		auto main = matrix.slice("main");
+		auto main = matrix.main_diagonal();
 		main[0].get() = 666;
 		matrix(0, 1) = 14;
 		matrix(1, 2) = 88;
-		auto upper = matrix.slice("upper");
+		auto upper = matrix.upper_diagonal();
 		matrix(1, 0) = 2;
 		matrix(2, 1) = 28;
-		auto lower = matrix.slice("lower");
+		auto lower = matrix.lower_diagonal();
+		//auto lower_1 = matrix.slice(LowerDiagonal<3>{});
 
 		auto row = matrix.row(0);
 		auto column = matrix.column(0);
@@ -56,7 +57,10 @@ int main()
 
 		std::vector b = {1.0, 2.0, 3.0};
 
-		matrix.use_solve_method(std::shared_ptr<TridiagonalMatrix<3>>()).solve(b);
+		using Tridiagonal = std::shared_ptr<TridiagonalMatrix<3>>;
+
+		auto solve_vector = matrix.use_solve_method(std::shared_ptr<TridiagonalMatrix<3>>()).solve(b);
+		//auto solve_vector = matrix.use_solve_method(Matrix<3, 3>::Tradiagonal()).solve(b);
 
 	}
 	catch (const std::exception& exception)

@@ -16,6 +16,9 @@ class SliceStrategy;
 template<std::size_t RowSize, std::size_t ColumnSize, typename TypeElem>
 class MatrixSolverStrategy;
 
+template<std::size_t Dimension, typename TypeElem = double>
+class TridiagonalMatrix;
+
 
 template<std::size_t RowSize, std::size_t ColumnSize, typename TypeElem = double>
 class Matrix
@@ -31,16 +34,23 @@ class Matrix
 	std::shared_ptr<SolveMethod>			solver_strategy_;
 public:
 	Matrix();
+	//using Tradiagonal = std::shared_ptr<TridiagonalMatrix<RowSize, TypeElem>>;
 
 	TypeElem& operator() (std::size_t row_number, std::size_t column_number);
-	Vector slice(std::string_view diagonal_name);
 	Vector slice(SliceStrategy<RowSize, ColumnSize, TypeElem>&& strategy);
+
+	Vector main_diagonal();
+	Vector lower_diagonal();
+	Vector upper_diagonal();
 
 	Vector row(std::size_t number_row);
 	Vector column(std::size_t number_col);
 
 	Mat& use_solve_method(std::shared_ptr<SolveMethod> method);
 	std::vector<TypeElem> solve(std::vector<TypeElem>& free_column);
+
+
+
 };
 
 

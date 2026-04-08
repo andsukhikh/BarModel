@@ -51,7 +51,7 @@ TridiagonalMatrix<Dimension, TypeElem>::TridiagonalMatrix()
 template<std::size_t Dimension, typename TypeElem>
 std::vector<TypeElem> TridiagonalMatrix<Dimension, TypeElem>::solve(std::vector<TypeElem>& free_column, Mat& matrix)
 {
-
+	
 }
 
 
@@ -60,7 +60,7 @@ std::vector<TypeElem> TridiagonalMatrix<Dimension, TypeElem>::solve(std::vector<
 
 template<std::size_t RowSize, std::size_t ColumnSize, typename TypeElem>
 Matrix<RowSize, ColumnSize, TypeElem>::Matrix()
-	: matrix_(RowSize* ColumnSize)
+	: matrix_(RowSize * ColumnSize)
 	, row_first_elem_index_(RowSize)
 	, solver_strategy_{}
 {
@@ -92,41 +92,52 @@ auto Matrix<RowSize, ColumnSize, TypeElem>::slice(SliceStrategy<RowSize, ColumnS
 }
 
 template<std::size_t RowSize, std::size_t ColumnSize, typename TypeElem>
-auto Matrix<RowSize, ColumnSize, TypeElem>::slice(std::string_view diagonal_name) -> Vector
+auto Matrix<RowSize, ColumnSize, TypeElem>::main_diagonal() -> Vector
 {
 	static_assert(RowSize == ColumnSize, "Slice is only available for square matrices");
 
 	Vector slice;
 	slice.reserve(RowSize);
 
-	if (diagonal_name == "main")
+	for (std::size_t index = 0; index != RowSize; ++index)
 	{
-		for (std::size_t index = 0; index != RowSize; ++index)
-		{
-			auto& ref = (*this)(index, index);
-			slice.push_back(ref);
-		}
+		auto& ref = (*this)(index, index);
+		slice.push_back(ref);
 	}
 
-	else if (diagonal_name == "upper")
+	return slice;
+}
+
+template<std::size_t RowSize, std::size_t ColumnSize, typename TypeElem>
+auto Matrix<RowSize, ColumnSize, TypeElem>::lower_diagonal() -> Vector
+{
+	static_assert(RowSize == ColumnSize, "Slice is only available for square matrices");
+
+	Vector slice;
+	slice.reserve(RowSize);
+
+	for (std::size_t index = 0; index != RowSize - 1; ++index)
 	{
-		for (std::size_t index = 0; index != RowSize - 1; ++index)
-		{
-			auto& ref = (*this)(index, index + 1);
-			slice.push_back(ref);
-		}
+		auto& ref = (*this)(index + 1, index);
+		slice.push_back(ref);
 	}
 
-	else if (diagonal_name == "lower")
-	{
-		for (std::size_t index = 0; index != RowSize - 1; ++index)
-		{
-			auto& ref = (*this)(index + 1, index);
-			slice.push_back(ref);
-		}
-	}
+	return slice;
+}
 
-	else throw std::invalid_argument("There is no slice mode:" + std::string(diagonal_name));
+template<std::size_t RowSize, std::size_t ColumnSize, typename TypeElem>
+auto Matrix<RowSize, ColumnSize, TypeElem>::upper_diagonal() -> Vector
+{
+	static_assert(RowSize == ColumnSize, "Slice is only available for square matrices");
+
+	Vector slice;
+	slice.reserve(RowSize);
+
+	for (std::size_t index = 0; index != RowSize - 1; ++index)
+	{
+		auto& ref = (*this)(index, index + 1);
+		slice.push_back(ref);
+	}
 
 	return slice;
 }

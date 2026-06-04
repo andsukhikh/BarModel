@@ -48,9 +48,6 @@ public:
 
 	Mat& use_solve_method(std::shared_ptr<SolveMethod> method);
 	std::vector<TypeElem> solve(std::vector<TypeElem>& free_column);
-
-
-
 };
 
 
@@ -98,32 +95,6 @@ public:
 	Vector extract(Mat& martix) override;
 };
 
-
-template<std::size_t RowSize, std::size_t ColumnSize, typename TypeElem = double>
-class MatrixSolverStrategy
-{
-	using Mat = Matrix<RowSize, ColumnSize, TypeElem>;
-public:
-	virtual ~MatrixSolverStrategy() = default;
-	virtual std::vector<TypeElem> solve(std::vector<TypeElem>& free_column, Mat& matrix) = 0;
-};
-
-
-template<std::size_t Dimension, typename TypeElem = double>
-class TridiagonalMatrix : public MatrixSolverStrategy<Dimension, Dimension, TypeElem>
-{
-	using Mat		= Matrix<Dimension, Dimension, TypeElem>;
-	using Ref		= std::reference_wrapper<TypeElem>;
-	using Vector	= std::vector<Ref>;
-
-	Vector lower_diagonal_;
-	Vector main_diagonal_;
-	Vector upper_diagonal_;
-public:
-	TridiagonalMatrix();
-
-	std::vector<TypeElem> solve(std::vector<TypeElem>& free_column, Mat& matrix) override;
-};
 
 #include "matrix.cpp"
 

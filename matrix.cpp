@@ -1,12 +1,12 @@
 #include "matrix.h"
 
 
-template<std::size_t Dimension, typename TypeElem>
-TridiagonalMatrix<Dimension, TypeElem>::TridiagonalMatrix()
-	: lower_diagonal_(Dimension)
-	, main_diagonal_(Dimension)
-	, upper_diagonal_(Dimension)
-{}
+//template<std::size_t Dimension, typename TypeElem>
+//TridiagonalMatrix<Dimension, TypeElem>::TridiagonalMatrix()
+//	: lower_diagonal_(Dimension)
+//	, main_diagonal_(Dimension)
+//	, upper_diagonal_(Dimension)
+//{}
 
 
 //template<std::size_t Dimension, typename TypeElem>
@@ -48,11 +48,11 @@ TridiagonalMatrix<Dimension, TypeElem>::TridiagonalMatrix()
 //	return solve_vector;
 //}
 
-template<std::size_t Dimension, typename TypeElem>
-std::vector<TypeElem> TridiagonalMatrix<Dimension, TypeElem>::solve(std::vector<TypeElem>& free_column, Mat& matrix)
-{
-	
-}
+//template<std::size_t Dimension, typename TypeElem>
+//std::vector<TypeElem> TridiagonalMatrix<Dimension, TypeElem>::solve(std::vector<TypeElem>& free_column, Mat& matrix)
+//{
+//	
+//}
 
 
 //------------  Begin  ---------------//

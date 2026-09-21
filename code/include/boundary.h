@@ -1,0 +1,43 @@
+#ifndef BOUNDARY_H
+#define BOUNDARY_H
+
+#include <memory>
+
+struct BoundaryCondition
+{
+	virtual ~BoundaryCondition() = default;
+	virtual double at_point(const double temperature) = 0;
+};
+
+
+class SecondBoundaryCondition : public BoundaryCondition
+{
+	const double flux_;
+public:
+	SecondBoundaryCondition(double flux);
+
+	double at_point(const double temperature) override;
+};
+
+
+class ThirdBoundaryCondition : public BoundaryCondition
+{
+	const double heat_transfer_coefficient_;
+	const double external_temperature_;
+public:
+	ThirdBoundaryCondition(double heat_transfer_coefficient, double external_temperature);
+
+	double at_point(const double temperature) override;
+};
+
+
+struct Boundary
+{
+	std::shared_ptr<BoundaryCondition> left_boundary		= {};
+	std::shared_ptr<BoundaryCondition> right_boundary		= {};
+	std::shared_ptr<BoundaryCondition> up_boundary			= {};
+	std::shared_ptr<BoundaryCondition> down_boundary		= {};
+};
+
+#endif // !BOUNDARY_H
+

@@ -1,7 +1,10 @@
 #ifndef SOLVER_H
 #define SOLVER_H
 
-#include "scheme.h"
+#include "grid.h"
+#include "boundary.h"
+#include "properties.h"
+#include "temperature.h"
 
 
 template<typename Scheme>
@@ -26,5 +29,5 @@ public:
 };
 
 
-#endif // !SOLVER_H
+#endif
 

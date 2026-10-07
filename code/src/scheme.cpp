@@ -1,13 +1,22 @@
 #include "scheme.h"
 #include "solver.h"
 #include "matrix.h"
+#include "enums.h"
 
 #include <stdexcept>
 #include <iostream>
 #include <bitset>
 
+template class SchemeBase<ExplicitScheme>;
+template class SchemeBase<ImplicitScheme>;
 
-void ExplicitScheme::evaluate()
+template<typename ConreteScheme>
+void SchemeBase<ConreteScheme>::evaluate()
+{
+	return static_cast<ConreteScheme*>(this)->evaluate_impl(); 
+}
+
+void ExplicitScheme::evaluate_impl()
 {	
 	if (!check_criterion()) throw std::runtime_error("The convergence condition of the difference scheme is not met: coarse mesh or a small time step");
 
@@ -166,14 +175,14 @@ const bool ExplicitScheme::check_criterion() const
 }
 
 
-void ImplicitScheme::evaluate()
+void ImplicitScheme::evaluate_impl()
 {
 	// for (i = 1, Nx)
 	// {
-	// 	auto temp_x_i = Solver<ImplicitScheme, Dim::1D>().grid(temp.row(i)).solve()
+	// 	auto temp_x_i = Solver<ImplicitScheme<Dim::one_space>>().grid(temp.row(i)).solve()
 	// 							[
 	// 								Tridiagonal matrix(N_x);
-	// 								visitor.view()
+	// 								visitor.view();
 	// 								matrix.fill_main_diag(123);
 	// 								matrix.fill_lower_diag(123);
 	// 								matrix.fill_upper_diag(123);

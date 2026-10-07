@@ -1,4 +1,5 @@
 #include "solver.h"
+#include "scheme.h"
 #include "matrix.h"
 
 #include <iostream>
@@ -78,32 +79,33 @@ int main()
 		//-----//---> End Old matrix realization <---//----//
 
 
-		//Tridiagonal tri(3);
-		//tri(0, 0) = 14;
-		//tri(1, 1) = 14;
-		//tri(2, 2) = 14;
+		// Tridiagonal tri(3);
+		// tri(0, 0) = 14;
+		// tri(1, 1) = 14;
+		// tri(2, 2) = 14;
 
-		////upper
-		//tri(0, 1) = 88;
-		//tri(1, 2) = 88;
+		// //upper
+		// tri(0, 1) = 88;
+		// tri(1, 2) = 88;
 
-		////down
-		//tri(1, 0) = 66;
-		//tri(2, 1) = 66;
+		// //down
+		// tri(1, 0) = 66;
+		// tri(2, 1) = 66;
 
-		//std::cout << tri;
+		// std::cout << tri;
 
-		//auto free_column = std::vector<double>(3, 3);
-		//auto vec = tri.set_solution_method(std::make_unique<ShuttleMethod>()).solve(free_column);
+		// auto free_column = std::vector<double>(3, 3);
+		// auto vec = tri.set_solution_method(ShuttleMethod()).solve(free_column);
 
-		////std::cout	<< ordinary(0, 0) << "\n"
-		////			<< tri(0, 0) << "\n"
-		////			<< tri(0, 1) << "\n"
-		////			<< tri(2, 0) << "\n"
-		////			<< "\n";
-		//temp
-		//std::cout << "\n";
-		//print_vec(vec);
+
+		// //std::cout	<< ordinary(0, 0) << "\n"
+		// //			<< tri(0, 0) << "\n"
+		// //			<< tri(0, 1) << "\n"
+		// //			<< tri(2, 0) << "\n"
+		// //			<< "\n";
+
+		// std::cout << "\n";
+		// print_vec(vec);
 
 	}
 

@@ -5,7 +5,6 @@
 #include <iostream>
 #include <memory>
 
-
 class Ordinary
 {
 	std::size_t row_size_;
@@ -24,8 +23,6 @@ class Tridiagonal
 {
 	friend class ShuttleMethod;
 private:
-	using UniquePtrSolveMethod = std::unique_ptr<class ISolveStrategyTridiagonalMatrix>;
-private:
 	std::size_t dimension_;
 
 	double zero_elem_;
@@ -35,7 +32,7 @@ private:
 	std::vector<double>		down_diagonal_;
 	double other_elems_;
 
-	UniquePtrSolveMethod solve_method_;
+	std::unique_ptr<class ISolveStrategyTridiagonalMatrix> solve_method_;
 
 public:
 	Tridiagonal(std::size_t size);
@@ -45,12 +42,15 @@ public:
 
 	std::size_t dimension() const;
 	
-	Tridiagonal& set_solution_method(UniquePtrSolveMethod&& solve_method);
+	Tridiagonal& set_solution_method(ISolveStrategyTridiagonalMatrix&& solve_method);
 
 	std::vector<double> solve(std::vector<double> free_column);
 
 	friend std::ostream& operator<< (std::ostream& output_stream, const Tridiagonal& this_matrix);
-
+private:
+	const bool is_diagonal(std::size_t row, std::size_t column) const;
+	const bool is_upper_diagonal(std::size_t row, std::size_t column) const;
+	const bool is_lower_diagonal(std::size_t row, std::size_t column) const;
 };
 
 
@@ -59,6 +59,7 @@ class ISolveStrategyTridiagonalMatrix
 public:
 	virtual ~ISolveStrategyTridiagonalMatrix() = default;
 	virtual std::vector<double> solve(std::vector<double>& free_column, Tridiagonal& matrix) = 0;
+	virtual std::unique_ptr<ISolveStrategyTridiagonalMatrix> return_copy_ptr() = 0;
 };
 
 
@@ -66,13 +67,8 @@ class ShuttleMethod : public ISolveStrategyTridiagonalMatrix
 {
 public:
 	std::vector<double> solve(std::vector<double>& free_column, Tridiagonal& matrix) override;
+	std::unique_ptr<ISolveStrategyTridiagonalMatrix> return_copy_ptr() override;
 };
-
-
-template <typename MatrixType>
-class Matrix : public MatrixType
-{};
-
 
 #endif 
 

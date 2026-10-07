@@ -5,37 +5,39 @@
 #include <optional>
 #include <type_traits>
 
+#include "enums.h"
 #include "temperature.h"
 #include "properties.h"
 #include "boundary.h"
 
 
-enum CopyFlags : char
+template<typename ConreteScheme>
+class SchemeBase
 {
-	not_copied		= 0b0000'0000,
-	copied			= 0b0000'0001 
-};
-
-
-class ExplicitScheme
-{
-	std::underlying_type_t<CopyFlags> flag_ = not_copied;
-protected:
+public:
 	Temperature temp;
-	Temperature new_temp;
 
-	std::optional<RegularGrid> grid					= {};
-	std::optional<Properties> prop					= {};
-	std::optional<Boundary> boundary_conditions		= {};
-	std::optional<double> temp_init					= {};
-	std::optional<double> time_end					= {};
-	std::optional<double> time_step					= {};
-	std::optional<double> Q_extend					= {};
+	std::optional<RegularGrid> grid								= {};
+	std::optional<Properties> prop								= {};
+	std::optional<Boundary> boundary_conditions					= {};
+	std::optional<double> time_end								= {};
+	std::optional<double> temp_init								= {};
+	std::optional<double> time_step								= {};
+	std::optional<double> Q_extend								= {};
 
 	double x_step;
 	double y_step;
-protected:
+public:
 	void evaluate();
+};
+
+class ExplicitScheme : public SchemeBase<ExplicitScheme>
+{
+	std::underlying_type_t<CopyFlags> flag_ = not_copied;
+protected:
+	Temperature new_temp;
+public:
+	void evaluate_impl();
 private:
 	void inner_explicit_scheme(std::size_t i, std::size_t j);
 
@@ -54,25 +56,11 @@ private:
 	void init_new_temp();
 };
 
-
-class ImplicitScheme
+class ImplicitScheme : public SchemeBase<ImplicitScheme>
 {
-protected:
-	Temperature temp;
-
-	std::optional<RegularGrid> grid					= {};
-	std::optional<Properties> prop					= {};
-	std::optional<Boundary> boundary_conditions		= {};
-	std::optional<double> temp_init					= {};
-	std::optional<double> time_end					= {};
-	std::optional<double> time_step					= {};
-	std::optional<double> Q_extend					= {};
-
-	double x_step;
-	double y_step;
-protected:
-	void evaluate();
+public:
+	void evaluate_impl();
 };
 
 
-#endif // !SCHEME_H
+#endif

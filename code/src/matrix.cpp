@@ -30,10 +30,15 @@ double& Ordinary::operator() (std::size_t row, std::size_t column)
 }
 
 
-Tridiagonal& Tridiagonal::set_solution_method(UniquePtrSolveMethod&& solve_method)
+Tridiagonal& Tridiagonal::set_solution_method(ISolveStrategyTridiagonalMatrix&& solve_method)
 {
-	solve_method_ = std::move(solve_method);
+	solve_method_ = std::move(solve_method.return_copy_ptr());
 	return *this;
+}
+
+std::unique_ptr<ISolveStrategyTridiagonalMatrix> ShuttleMethod::return_copy_ptr()
+{
+	return std::make_unique<ShuttleMethod>(*this);
 }
 
 std::vector<double> ShuttleMethod::solve(std::vector<double>& free_column, Tridiagonal& matrix)
@@ -79,13 +84,28 @@ Tridiagonal::Tridiagonal(std::size_t dimension)
 	, solve_method_(nullptr)
 {}
 
+const bool Tridiagonal::is_diagonal(std::size_t row, std::size_t column) const
+{
+	return row == column;
+}
+
+const bool Tridiagonal::is_lower_diagonal(std::size_t row, std::size_t column) const
+{
+	return row == column + 1;
+}
+
+const bool Tridiagonal::is_upper_diagonal(std::size_t row, std::size_t column) const
+{
+	return row == column - 1;
+}
+
 const double& Tridiagonal::operator() (std::size_t row, std::size_t column) const
 {
 	if (row < dimension_ && column < dimension_)
 	{
-		if (row == column)		return main_diagonal_[row];
-		if (row == column - 1)	return upper_diagonal_[column - 1];
-		if (row == column + 1)	return down_diagonal_[column + 1];
+		if (this->is_diagonal(row, column))			return main_diagonal_[row];
+		if (this->is_upper_diagonal(row, column))	return upper_diagonal_[row];
+		if (this->is_lower_diagonal(row, column))	return down_diagonal_[row];
 
 		return other_elems_;
 	}
@@ -96,9 +116,9 @@ double& Tridiagonal::operator() (std::size_t row, std::size_t column)
 {
 	if (row < dimension_ && column < dimension_)
 	{
-		if (row == column)		return main_diagonal_[row];
-		if (row == column - 1)	return upper_diagonal_[column - 1];
-		if (row == column + 1)	return down_diagonal_[column + 1];
+		if (this->is_diagonal(row, column))			return main_diagonal_[row];
+		if (this->is_upper_diagonal(row, column))	return upper_diagonal_[row];
+		if (this->is_lower_diagonal(row, column))	return down_diagonal_[row];
 
 		return other_elems_;
 	}

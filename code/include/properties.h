@@ -14,5 +14,5 @@ struct Properties
 	static const double deg_Kelvin_is;
 };
 
-#endif // !PROPERTIES_H
+#endif
 

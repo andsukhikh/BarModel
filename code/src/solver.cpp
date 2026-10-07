@@ -1,4 +1,6 @@
 #include "solver.h"
+#include "scheme.h"
+
 
 #include <optional>
 #include <stdexcept>

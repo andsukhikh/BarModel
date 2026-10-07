@@ -1,13 +1,8 @@
 #include "grid.h"
+#include "enums.h"
 
-#include <iostream>
-#include <iomanip>
 #include <string>
 #include <algorithm>
-#include <numeric>
-
-#include <source_location>
-
 
 
 const std::size_t RegularGrid::count_digit(int number) const

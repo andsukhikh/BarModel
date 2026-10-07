@@ -39,5 +39,5 @@ struct Boundary
 	std::shared_ptr<BoundaryCondition> down_boundary		= {};
 };
 
-#endif // !BOUNDARY_H
+#endif
 

@@ -2,15 +2,10 @@
 #define TEMPERATURE_H
 
 #include "grid.h"
+#include "enums.h"
 
 #include <memory>
 #include <type_traits>
-
-enum ConvertFlags : char
-{
-	is_Celsius =	0b0000'0001,
-	is_Kelvin =		0b0000'0010
-};
 
 
 class Temperature : public RegularGrid

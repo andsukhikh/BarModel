@@ -43,7 +43,7 @@ const bool RegularGrid<ProblemDimension::_2D>::is_down(std::size_t x_index, std:
 }
 
 RegularGrid<ProblemDimension::_2D>::RegularGrid(std::size_t x_size, std::size_t y_size)
-    : buffer_(y_size, x_size)
+    : buffer_(y_size * x_size)
     , view_(buffer_.data(), y_size, x_size)
 {}
 

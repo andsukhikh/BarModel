@@ -6,32 +6,7 @@
 #include <iostream>
 #include <memory>
 #include <array>
-#include <cassert>
 
-
-// template<typename T = double>
-// void print_vec(std::vector<T> vec)
-// {
-// 	for (auto&& val : vec)
-// 	{
-// 		std::cout << val << " ";
-// 	}
-
-// 	std::cout << "\n";
-// }
-
-
-// void print_2d(const RegularGrid<_2D>& m)
-// {
-//     for (std::size_t y = m.size_y(); y-- > 0; )
-//     {
-//         for (std::size_t x = 0; x < m.size_x(); ++x)
-//         {
-//             std::cout << m(x, y) << ' ';
-//         }
-//         std::cout << '\n';
-//     }
-// }
 
 int main()
 {
@@ -83,69 +58,6 @@ int main()
 		// 															.set_time_step(10)
 		// 															.solve();
 		// temp_.to_Celsius_deg().show(1);
-
-
-
-		
-
-		// auto __ = Solver<ExplicitScheme_2D>()	.set_grid(grid).solve();
-				
-		
-		//-----//---> Begin Old matrix realization <---//----//
-			//Matrix<3, 3> matrix;
-			//matrix(0, 0) = 100;
-			//matrix(1, 1) = 100;
-			//matrix(2, 2) = 100;
-			//auto main = matrix.main_diagonal();
-			//main[0].get() = 666;
-			//matrix(0, 1) = 14;
-			//matrix(1, 2) = 88;
-			//auto upper = matrix.upper_diagonal();
-			//matrix(1, 0) = 2;
-			//matrix(2, 1) = 28;
-			//auto lower = matrix.lower_diagonal();
-			////auto lower_1 = matrix.slice(LowerDiagonal<3>{});
-
-			//auto row = matrix.row(0);
-			//auto column = matrix.column(0);
-
-			//auto sada = 1.1;
-
-			//std::vector b = { 1.0, 2.0, 3.0 };
-
-			//auto solve_vector = matrix.use_solve_method(std::shared_ptr<TridiagonalMatrix<3>>()).solve(b);
-			//auto solve_vector = matrix.use_solve_method(Matrix<3, 3>::Tradiagonal()).solve(b);
-		//-----//---> End Old matrix realization <---//----//
-
-
-		// Tridiagonal tri(3);
-		// tri(0, 0) = 14;
-		// tri(1, 1) = 14;
-		// tri(2, 2) = 14;
-
-		// //upper
-		// tri(0, 1) = 88;
-		// tri(1, 2) = 88;
-
-		// //down
-		// tri(1, 0) = 66;
-		// tri(2, 1) = 66;
-
-		// std::cout << tri;
-
-		// auto free_column = std::vector<double>(3, 3);
-		// auto vec = tri.set_solution_method(ShuttleMethod()).solve(free_column);
-
-
-		// //std::cout	<< ordinary(0, 0) << "\n"
-		// //			<< tri(0, 0) << "\n"
-		// //			<< tri(0, 1) << "\n"
-		// //			<< tri(2, 0) << "\n"
-		// //			<< "\n";
-
-		// std::cout << "\n";
-		// print_vec(vec);
-
 	}
 
 	catch (const std::exception& exception)

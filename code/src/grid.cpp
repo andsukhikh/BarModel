@@ -1,119 +1,222 @@
+#include <memory>
+
 #include "grid.h"
-#include "enums.h"
 
-#include <string>
-#include <algorithm>
-
-
-const std::size_t RegularGrid::count_digit(int number) const
-{
-    return std::to_string(number).size();
-}
-
-const bool RegularGrid::is_lower_left(std::size_t x_index, std::size_t y_index) const
+const bool RegularGrid<ProblemDimension::_2D>::is_lower_left(std::size_t x_index, std::size_t y_index) const
 {
     return x_index == 0 && y_index == 0;
 }
 
-const bool RegularGrid::is_upper_left(std::size_t x_index, std::size_t y_index) const
+const bool RegularGrid<ProblemDimension::_2D>::is_upper_left(std::size_t x_index, std::size_t y_index) const
 {
     return x_index == 0 && y_index == size_y() - 1;
 }
 
-const bool RegularGrid::is_upper_right(std::size_t x_index, std::size_t y_index) const
+const bool RegularGrid<ProblemDimension::_2D>::is_upper_right(std::size_t x_index, std::size_t y_index) const
 {
     return x_index == size_x() - 1 && y_index == size_y() - 1;
 }
 
-const bool RegularGrid::is_lower_right(std::size_t x_index, std::size_t y_index) const
+const bool RegularGrid<ProblemDimension::_2D>::is_lower_right(std::size_t x_index, std::size_t y_index) const
 {
     return x_index == size_x() - 1 && y_index == 0;
 }
 
-const bool RegularGrid::is_left(std::size_t x_index, std::size_t y_index) const
+const bool RegularGrid<ProblemDimension::_2D>::is_left(std::size_t x_index, std::size_t y_index) const
 {
     return x_index == 0 && !is_lower_left(x_index, y_index) && !is_upper_left(x_index, y_index);
 }
 
-const bool RegularGrid::is_right(std::size_t x_index, std::size_t y_index) const
+const bool RegularGrid<ProblemDimension::_2D>::is_right(std::size_t x_index, std::size_t y_index) const
 {
     return x_index == size_x() - 1 && !is_lower_right(x_index, y_index) && !is_upper_right(x_index, y_index);
 }
 
-const bool RegularGrid::is_up(std::size_t x_index, std::size_t y_index) const
+const bool RegularGrid<ProblemDimension::_2D>::is_up(std::size_t x_index, std::size_t y_index) const
 {
     return y_index == size_y() - 1 && !is_upper_left(x_index, y_index) && !is_upper_right(x_index, y_index);
 }
 
-const bool RegularGrid::is_down(std::size_t x_index, std::size_t y_index) const
+const bool RegularGrid<ProblemDimension::_2D>::is_down(std::size_t x_index, std::size_t y_index) const
 {
     return y_index == 0 && !is_lower_left(x_index, y_index) && !is_lower_right(x_index, y_index);
 }
 
-RegularGrid::RegularGrid(std::size_t x_partitions_number, std::size_t y_partitions_number)
-    : grid_         (x_partitions_number * y_partitions_number)
-    , row_number_   (y_partitions_number)
+RegularGrid<ProblemDimension::_2D>::RegularGrid(std::size_t x_size, std::size_t y_size)
+    : buffer_(y_size, x_size)
+    , view_(buffer_.data(), y_size, x_size)
+{}
+
+RegularGrid<ProblemDimension::_2D>::RegularGrid(const RegularGrid& other)
+    : buffer_(other.buffer_)
+    , view_(buffer_.data(), other.size_y(), other.size_x())
+{}
+
+RegularGrid<ProblemDimension::_2D>& RegularGrid<ProblemDimension::_2D>::operator=(const RegularGrid& other) 
 {
-    std::size_t new_row_begin_index = 0;
-    std::for_each(row_number_.begin(), row_number_.end(), [&](std::size_t& index)
-        {
-            index = new_row_begin_index;
-            new_row_begin_index += x_partitions_number;
-        });
+    buffer_ = other.buffer_;
+    view_   = Grid(buffer_.data(), other.size_y(), other.size_x());
+    return *this;
 }
 
-double& RegularGrid::operator() (std::size_t x_index, std::size_t y_index)
+double& RegularGrid<ProblemDimension::_2D>::operator() (std::size_t x_index, std::size_t y_index)
 {
-    auto row_offset = row_number_.at(size_y() - 1 - y_index);
-    return                  grid_.at(row_offset + x_index);
+    const auto y_index_offset = size_y() - 1 - y_index;
+    return view_(y_index_offset, x_index);
+}
+
+const double& RegularGrid<ProblemDimension::_2D>::operator() (std::size_t x_index, std::size_t y_index) const
+{
+    const auto y_index_offset = size_y() - 1 - y_index;
+    return view_(y_index_offset, x_index);
+}
+
+const std::size_t RegularGrid<ProblemDimension::_2D>::size_x() const
+{
+    return view_.extent(Axis::X);
+}
+
+const std::size_t RegularGrid<ProblemDimension::_2D>::size_y() const
+{
+    return view_.extent(Axis::Y);
+}
+
+RegularGrid<ProblemDimension::_2D>::iterator RegularGrid<ProblemDimension::_2D>::begin()
+{
+    return view_.data_handle();
+}
+
+RegularGrid<ProblemDimension::_2D>::iterator RegularGrid<ProblemDimension::_2D>::end()
+{
+    return view_.data_handle() + view_.size();
+}
+
+RegularGrid<ProblemDimension::_2D>::const_iterator RegularGrid<ProblemDimension::_2D>::cbegin() const
+{
+    return view_.data_handle();
+}
+
+RegularGrid<ProblemDimension::_2D>::const_iterator RegularGrid<ProblemDimension::_2D>::cend() const
+{
+    return view_.data_handle() + view_.size();
+}
+
+RegularGrid<_1D> RegularGrid<ProblemDimension::_2D>::slice_y(std::uint8_t index)
+{
+    RegularGrid<_1D> result(size_y());
+
+    auto row = stdex::submdspan(view_, index, stdex::full_extent);
+
+    for (std::size_t x = 0; x < size_x(); ++x)
+        result(x) = row[x];
+
+    return result;
+}
+
+RegularGrid<_1D> RegularGrid<ProblemDimension::_2D>::slice_x(std::uint8_t index)
+{
+    RegularGrid<_1D> result(size_x());
+
+    auto row = stdex::submdspan(view_, index, stdex::full_extent);
+
+    for (std::size_t x = 0; x < size_x(); ++x)
+        result(x) = row[x];
+
+    return result;
 }
 
 
-//void RegularGrid::show()
-//{
-//    auto max_number_digit_y = count_digit(grid_.end() - grid_.begin());
-//
-//    std::cout << std::setw(max_number_digit_y) << " " << "X" << "\n"
-//        << std::setw(max_number_digit_y) << " " << "^" << "\n";
-//
-//    for (auto iterator_y = grid_.rbegin(), iterator_y_end = grid_.rend(); iterator_y != iterator_y_end; ++iterator_y)
-//    {
-//        auto index = grid_.crend() - iterator_y;
-//        std::cout << std::setw(max_number_digit_y) << index << "|";
-//
-//        for (auto iterator_x = iterator_y->cbegin(), iterator_x_end = iterator_y->cend(); iterator_x != iterator_x_end; ++iterator_x)
-//        {
-//            auto index_x = iterator_x - iterator_y->cbegin() + 1;
-//            std::cout << index_x;
-//
-//            if (iterator_x != iterator_y->cend() - 1) std::cout << "--";
-//        }
-//
-//        auto y_axis_indent = max_number_digit_y + 1;
-//        std::cout << "\n";
-//
-//        if (iterator_y != grid_.crend() - 1)
-//        {
-//            std::cout << std::setw(y_axis_indent) << "|";
-//            for (auto iterator_x = iterator_y->cbegin(), iterator_x_end = iterator_y->cend(); iterator_x != iterator_x_end; ++iterator_x)
-//            {
-//                auto index_x = iterator_x - iterator_y->cbegin() + 1;
-//                auto digit_number = count_digit(index_x);
-//                auto middle_pos = digit_number / 2;
-//                auto indent = digit_number + middle_pos;
-//                std::cout << "|" << " " << std::string(indent, ' ');
-//            }
-//            std::cout << "\n";
-//        }
-//    }
-//}
-
-const std::size_t RegularGrid::size_x() const
+const std::size_t count_digit(int number)
 {
-    return grid_.size() / size_y();
+    return std::to_string(number).size();
 }
 
-const std::size_t RegularGrid::size_y() const
+
+
+
+
+
+const bool RegularGrid<ProblemDimension::_1D>::is_left(std::size_t index) const
 {
-    return row_number_.size();
+    return index == 0;
 }
+
+const bool RegularGrid<ProblemDimension::_1D>::is_right(std::size_t index) const
+{
+    return index == size() - 1;
+}
+
+
+RegularGrid<ProblemDimension::_1D>::RegularGrid(std::size_t size)
+    : buffer_(size)
+    , view_(buffer_.data(), size)
+{}
+
+RegularGrid<ProblemDimension::_1D>::RegularGrid(const RegularGrid& other)
+    : buffer_(other.buffer_)
+    , view_(buffer_.data(), other.size())
+{}
+
+RegularGrid<ProblemDimension::_1D>& RegularGrid<ProblemDimension::_1D>::operator=(const RegularGrid& other) 
+{
+    buffer_ = other.buffer_;
+    view_   = Grid(buffer_.data(), other.size());
+    return *this;
+}
+
+double& RegularGrid<ProblemDimension::_1D>::operator() (std::size_t index)
+{
+    return view_(index);
+}
+
+const double& RegularGrid<ProblemDimension::_1D>::operator() (std::size_t index) const
+{
+    return view_(index);
+}
+
+const std::size_t RegularGrid<ProblemDimension::_1D>::size() const
+{
+    return view_.extent(Axis::X);
+}
+
+
+RegularGrid<ProblemDimension::_1D>::iterator RegularGrid<ProblemDimension::_1D>::begin()
+{
+    return view_.data_handle();
+}
+
+RegularGrid<ProblemDimension::_1D>::iterator RegularGrid<ProblemDimension::_1D>::end()
+{
+    return view_.data_handle() + view_.size();
+}
+
+double RegularGrid<ProblemDimension::_1D>::front()
+{
+    return buffer_.front();
+}
+
+double RegularGrid<ProblemDimension::_1D>::back()
+{
+    return buffer_.back();
+}
+
+const double RegularGrid<ProblemDimension::_1D>::cfront() const
+{
+    return buffer_.front();
+}
+
+const double RegularGrid<ProblemDimension::_1D>::cback() const
+{
+    return buffer_.back();
+}
+
+RegularGrid<ProblemDimension::_1D>::const_iterator RegularGrid<ProblemDimension::_1D>::cbegin() const
+{
+    return view_.data_handle();
+}
+
+RegularGrid<ProblemDimension::_1D>::const_iterator RegularGrid<ProblemDimension::_1D>::cend() const
+{
+    return view_.data_handle() + view_.size();
+}
+

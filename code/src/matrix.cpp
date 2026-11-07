@@ -132,6 +132,35 @@ std::vector<double> Tridiagonal::solve(std::vector<double> free_column)
 	return solve_method_->solve(free_column, *this);
 }
 
+void Tridiagonal::fill_main_diagonal(double value)
+{
+	std::fill(main_diagonal_.begin(), main_diagonal_.end(), value);
+}
+
+void Tridiagonal::fill_down_diagonal(double value)
+{
+	std::fill(down_diagonal_.begin(), down_diagonal_.end(), value);
+}
+
+void Tridiagonal::fill_upper_diagonal(double value)
+{
+	std::fill(upper_diagonal_.begin(), upper_diagonal_.end(), value);
+}
+
+void Tridiagonal::set_first_coefficient(double first, double second, double third)
+{
+	down_diagonal_	.front() = first;
+	main_diagonal_	.front() = second;
+	upper_diagonal_	.front() = third;
+}
+
+void Tridiagonal::set_last_coefficient(double first, double second, double third)
+{
+	down_diagonal_	.back() = first;
+	main_diagonal_	.back() = second;
+	upper_diagonal_	.back() = third;
+}
+
 std::size_t Tridiagonal::dimension() const
 {
 	return dimension_;

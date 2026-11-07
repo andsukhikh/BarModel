@@ -1,22 +1,37 @@
 #include "solver.h"
 #include "scheme.h"
 #include "matrix.h"
+#include "geometry.h"
 
 #include <iostream>
 #include <memory>
+#include <array>
+#include <cassert>
 
 
-template<typename T = double>
-void print_vec(std::vector<T> vec)
-{
-	for (auto&& val : vec)
-	{
-		std::cout << val << " ";
-	}
+// template<typename T = double>
+// void print_vec(std::vector<T> vec)
+// {
+// 	for (auto&& val : vec)
+// 	{
+// 		std::cout << val << " ";
+// 	}
 
-	std::cout << "\n";
-}
+// 	std::cout << "\n";
+// }
 
+
+// void print_2d(const RegularGrid<_2D>& m)
+// {
+//     for (std::size_t y = m.size_y(); y-- > 0; )
+//     {
+//         for (std::size_t x = 0; x < m.size_x(); ++x)
+//         {
+//             std::cout << m(x, y) << ' ';
+//         }
+//         std::cout << '\n';
+//     }
+// }
 
 int main()
 {
@@ -24,12 +39,16 @@ int main()
 	{
 		.density = 9000,
 		.heat_capacity = 400,
-		.length = 0.6,
-		.width = 0.6,
 		.thermal_conductivity = 300
 	};
 
-	RegularGrid grid(11, 11);
+	Geometry geometry
+	(
+		Length {0.6}, 
+		Width  {0.6}
+	);
+
+	RegularGrid<ProblemDimension::_2D> grid(5, 10);
 
 	Boundary conditions
 	{
@@ -41,16 +60,36 @@ int main()
 
 	try
 	{
-		auto temp = Solver<ExplicitScheme>()	.set_grid(grid)
-												.set_boundary_conditions(conditions)
-												.set_prop(thermal_prop)
-												.set_Q_extend(0)
-												.set_initial_values(373)
-												.set_time_end(2000)
-												.set_time_step(10)
-												.solve();
+		auto temp = Solver<ExplicitScheme<ProblemDimension::_2D>>()	.set_grid(grid)
+																	.set_geometry(geometry)
+																	.set_boundary_conditions(conditions)
+																	.set_prop(thermal_prop)
+																	.set_Q_extend(0)
+																	.set_initial_values(373)
+																	.set_time_end(200)
+																	.set_time_step(10)
+																	.solve();
 		temp.to_Celsius_deg().show(1);
 
+
+
+		// auto temp_ = Solver<ImplicitScheme<ProblemDimension::_2D>>() .set_grid(grid)
+		// 															.set_geometry(geometry)
+		// 															.set_boundary_conditions(conditions)
+		// 															.set_prop(thermal_prop)
+		// 															.set_Q_extend(0)
+		// 															.set_initial_values(373)
+		// 															.set_time_end(200)
+		// 															.set_time_step(10)
+		// 															.solve();
+		// temp_.to_Celsius_deg().show(1);
+
+
+
+		
+
+		// auto __ = Solver<ExplicitScheme_2D>()	.set_grid(grid).solve();
+				
 		
 		//-----//---> Begin Old matrix realization <---//----//
 			//Matrix<3, 3> matrix;

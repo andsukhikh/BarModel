@@ -5,7 +5,6 @@ set(CODE_SOURCE
         ${CMAKE_CURRENT_SOURCE_DIR}/src/properties.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/scheme.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/solver.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/temperature.cpp
 )
 
 add_library(_logic

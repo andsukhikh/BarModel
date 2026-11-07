@@ -46,6 +46,13 @@ public:
 
 	std::vector<double> solve(std::vector<double> free_column);
 
+	void fill_main_diagonal(double value);
+	void fill_upper_diagonal(double value);
+	void fill_down_diagonal(double value);
+
+	void set_first_coefficient(double first, double second, double third);
+	void set_last_coefficient(double first, double second, double third);
+
 	friend std::ostream& operator<< (std::ostream& output_stream, const Tridiagonal& this_matrix);
 private:
 	const bool is_diagonal(std::size_t row, std::size_t column) const;
